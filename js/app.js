@@ -10,7 +10,7 @@
    featured: true shows it in the homepage "Featured Photos" filmstrip
    ------------------------------------------------------------- */
 const photos = [
-    { id: 1,  title: "Tiger 3 — Action Still",       category: "movies",    image: "images/movies/tiger3-1.jpg",       featured: true },
+    { id: 1,  title: "Ek Tha Tiger Poster Still",     category: "movies",    image: "images/movies/tiger-1.jpg",       featured: true },
     { id: 2,  title: "Dabangg — Chulbul Pandey",      category: "movies",    image: "images/movies/dabangg-1.jpg",       featured: true },
     { id: 3,  title: "Bajrangi Bhaijaan Still",       category: "movies",    image: "images/movies/bajrangi-1.jpg",      featured: true },
     { id: 4,  title: "Sultan — Wrestling Ring",       category: "movies",    image: "images/movies/sultan-1.jpg",        featured: false },
@@ -138,13 +138,16 @@ function initMusic() {
                 .then(() => setPlayingUI(true))
                 .catch(() => {
                     // Autoplay blocked -- wait for the first user interaction, then try once.
+                    // Only "click" is used (not "touchstart"): some mobile browsers reject
+                    // play() calls made during touchstart (it can just be a scroll gesture),
+                    // and that would burn our one-shot listener before a real tap ever lands.
                     const startOnInteraction = () => {
                         audio.play().then(() => setPlayingUI(true)).catch(() => {});
-                        ["click", "touchstart", "keydown"].forEach(evt =>
+                        ["click", "keydown"].forEach(evt =>
                             document.removeEventListener(evt, startOnInteraction)
                         );
                     };
-                    ["click", "touchstart", "keydown"].forEach(evt =>
+                    ["click", "keydown"].forEach(evt =>
                         document.addEventListener(evt, startOnInteraction, { once: true })
                     );
                 });
