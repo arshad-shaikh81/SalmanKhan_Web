@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salman Khan Photo Gallery | The Journey of a Superstar</title>
+    <meta name="description" content="A premium cinematic photo gallery dedicated to Salman Khan — browse movies, events, portraits, throwback photos, and HD wallpapers." />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Salman Khan Photo Gallery" />
+    <meta property="og:description" content="A premium cinematic photo gallery dedicated to Salman Khan." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="images/hero/hero-main.jpg" />
+
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<header class="navbar">
+    <a href="index.html" class="logo">SALMAN KHAN</a>
+
+    <nav aria-label="Main navigation">
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="movies.html">Movies</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="wallpapers.html">Wallpapers</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+    <div class="hero-bg" data-src="images/hero/hero-main.jpg" role="img" aria-label="Salman Khan portrait"></div>
+
+    <!-- Entry video clip: crossfades in/out against the photo above while
+         the background music plays. Drop your clip at assets/video/entry-clip.mp4
+         (muted + looping so it can autoplay without needing a tap). -->
+    <video class="hero-video" data-src="assets/video/entry-clip.mp4" muted loop playsinline aria-hidden="true"></video>
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+        <span class="hero-eyebrow">Bollywood Icon · Actor · Philanthropist</span>
+        <h1 class="hero-title">The Journey of a Superstar</h1>
+        <p class="hero-desc">
+            From his breakout debut to decades of blockbuster action and drama, explore a curated
+            visual archive of Salman Khan — on screen, on stage, and behind the scenes.
+        </p>
+        <div class="hero-actions">
+            <a href="gallery.html" class="btn btn-primary">Explore Gallery</a>
+            <a href="movies.html" class="btn btn-outline">Browse Movies</a>
+        </div>
+    </div>
+</section>
+
+<!-- ============ FEATURED PHOTOS (filmstrip) ============ -->
+<section class="filmstrip-section">
+    <div class="container">
+        <span class="section-eyebrow">Handpicked</span>
+        <h2 class="section-heading">Featured Photos</h2>
+        <p class="section-sub">A rotating reel of standout stills from movies, events, and portrait sessions.</p>
+    </div>
+    <div class="filmstrip-track" data-filmstrip aria-label="Featured photo reel">
+        <!-- populated by js/app.js -->
+    </div>
+</section>
+
+<!-- ============ POPULAR CATEGORIES ============ -->
+<section class="categories-section">
+    <div class="container">
+        <span class="section-eyebrow">Browse By</span>
+        <h2 class="section-heading">Popular Categories</h2>
+        <p class="section-sub">Jump straight into the collection that interests you most.</p>
+
+        <div class="category-grid" data-category-grid>
+            <!-- populated by js/app.js -->
+        </div>
+    </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <span class="logo">SALMAN KHAN</span>
+                <p>An unofficial fan-made photo gallery celebrating the on-screen and off-screen journey of Salman Khan. Built for browsing only — no downloads unless noted.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Explore</h4>
+                <a href="gallery.html">Gallery</a>
+                <a href="movies.html">Movies</a>
+                <a href="events.html">Events</a>
+                <a href="wallpapers.html">Wallpapers</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Site</h4>
+                <a href="about.html">About</a>
+                <a href="index.html">Home</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Salman Khan Photo Gallery — Fan Project. Not affiliated with Salman Khan or his official team.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Background music (plays once per browser session on first page load).
+     Drop your own audio file at assets/audio/theme.mp3 — see the README
+     in that folder. Autoplay-blocked browsers fall back to starting on
+     the visitor's first click/tap anywhere on the page. -->
+<audio id="bgMusic" src="assets/audio/theme.mp3" preload="none"></audio>
+
+<button id="musicToggle" class="music-toggle" aria-label="Play background music" aria-pressed="false">
+    <svg class="icon-music-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.6"/>
+    </svg>
+    <svg class="icon-music-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" hidden>
+        <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.6"/>
+        <line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+</button>
+
+<script src="js/app.js"></script>
+</body>
+</html>

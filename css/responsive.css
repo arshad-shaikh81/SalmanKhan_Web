@@ -1,0 +1,120 @@
+/* ==========================================================================
+   RESPONSIVE.CSS — breakpoints for mobile, tablet, laptop, desktop, large
+   Mobile-first overrides layered on top of style.css
+   ========================================================================== */
+
+/* Tablet and below (≤ 900px): collapse nav into a toggle menu */
+@media (max-width: 900px) {
+    .nav-toggle {
+        display: flex;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 64px;
+        right: 0;
+        flex-direction: column;
+        background: rgba(11, 11, 13, 0.97);
+        backdrop-filter: var(--glass-blur);
+        width: 220px;
+        padding: var(--space-md);
+        gap: var(--space-sm);
+        transform: translateX(100%);
+        transition: transform var(--transition-med);
+        border-left: 1px solid var(--color-border);
+        height: calc(100vh - 64px);
+    }
+
+    .nav-links.open {
+        transform: translateX(0);
+    }
+
+    .hero-content {
+        padding: var(--space-lg) var(--space-sm) var(--space-md);
+    }
+
+    .film-frame {
+        width: 220px;
+    }
+}
+
+/* Mobile (≤ 600px) */
+@media (max-width: 600px) {
+    .container { padding: 0 var(--space-sm); }
+
+    .hero-title { font-size: clamp(2rem, 9vw, 2.8rem); }
+    .hero-desc { font-size: 0.95rem; }
+
+    .hero-actions { flex-direction: column; align-items: stretch; }
+    .hero-actions .btn { justify-content: center; }
+
+    .category-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .footer-grid { flex-direction: column; }
+
+    .film-frame { width: 190px; }
+}
+
+/* Small mobile (≤ 380px) */
+@media (max-width: 380px) {
+    .category-grid { grid-template-columns: 1fr; }
+    .film-frame { width: 78vw; }
+    .logo { font-size: 1.1rem; }
+    .hero-eyebrow { letter-spacing: 0.15em; font-size: 0.7rem; }
+    .btn { padding: 0.75rem 1.4rem; font-size: 0.78rem; }
+}
+
+/* Very small / older devices (≤ 320px) */
+@media (max-width: 320px) {
+    .hero-title { font-size: 1.9rem; }
+    .navbar { padding: 0.8rem var(--space-sm); }
+    .film-frame { width: 82vw; }
+}
+
+/* Hero height on short mobile viewports (landscape phones, small screens) */
+@media (max-width: 600px), (max-height: 600px) {
+    .hero {
+        min-height: 100svh; /* respects mobile browser chrome */
+    }
+    .hero-content {
+        padding-top: 6rem;
+    }
+}
+
+/* Ensure hero monogram watermark doesn't overflow or clutter small screens */
+@media (max-width: 700px) {
+    .hero-bg::before {
+        font-size: min(70vw, 420px);
+        opacity: 0.7;
+    }
+}
+
+/* Nav toggle → animated hamburger to X when menu is open */
+.nav-toggle[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.nav-toggle[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+}
+.nav-toggle[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+.nav-toggle span {
+    transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+/* Tablet portrait fine-tuning (600px–900px) */
+@media (min-width: 601px) and (max-width: 900px) {
+    .category-grid { grid-template-columns: repeat(3, 1fr); }
+    .hero-title { font-size: clamp(2.4rem, 6vw, 3.4rem); }
+}
+
+/* Laptop (≥ 1024px) */
+@media (min-width: 1024px) {
+    .category-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Large screens (≥ 1600px) */
+@media (min-width: 1600px) {
+    .container { max-width: 1440px; }
+}
