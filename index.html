@@ -49,8 +49,10 @@
 
     <!-- Entry video clip: crossfades in/out against the photo above while
          the background music plays. Drop your clip at assets/video/entry-clip.mp4
-         (muted + looping so it can autoplay without needing a tap). -->
-    <video class="hero-video" data-src="assets/video/entry-clip.mp4" muted loop playsinline aria-hidden="true"></video>
+         (muted + looping so it can autoplay without needing a tap).
+         autoplay + preload="auto" added so mobile browsers load/play it
+         immediately instead of waiting for a user tap. -->
+    <video class="hero-video" data-src="assets/video/entry-clip.mp4" data-src-mobile="assets/video/entry-clip-mobile.mp4" muted autoplay loop playsinline webkit-playsinline preload="auto" aria-hidden="true"></video>
 
     <div class="hero-overlay"></div>
 

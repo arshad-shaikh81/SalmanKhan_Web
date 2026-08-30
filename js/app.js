@@ -184,7 +184,11 @@ function initHeroEntry() {
     const audio = document.getElementById("bgMusic");
     if (!video) return;
 
-    const src = video.dataset.src;
+    // Use a separately-cropped portrait video on narrow (mobile) screens
+    // so the subject stays framed, instead of relying on CSS crop alone.
+    const isMobile = window.matchMedia("(max-width: 600px)").matches;
+    const mobileSrc = video.dataset.srcMobile;
+    const src = (isMobile && mobileSrc) ? mobileSrc : video.dataset.src;
     if (!src) return;
 
     const CYCLE_MS = 150;         // milliseconds each state (video / photo) stays visible -- rapid strobe blink
