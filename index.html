@@ -70,6 +70,30 @@
     </div>
 </section>
 
+<!-- ============ FEATURED DIALOGUE ============ -->
+<section class="dialogue-section">
+    <div class="container">
+        <div class="dialogue-card fade-up" id="dialogueTrigger" tabindex="0" role="button" aria-haspopup="dialog" aria-label="View all dialogues">
+            <!-- Image layer is separate from the card so it can be nudged up/down
+                 independently on scroll (parallax) without moving the card itself. -->
+            <div class="dialogue-card-media" id="dialogueMedia" aria-hidden="true"></div>
+            <span class="dialogue-cta">Tap to see all dialogues →</span>
+        </div>
+    </div>
+</section>
+
+<!-- ============ ALL DIALOGUES MODAL ============ -->
+<div class="dialogue-modal" id="dialogueModal" role="dialog" aria-modal="true" aria-label="All dialogues" hidden>
+    <div class="dialogue-modal-backdrop" id="dialogueModalBackdrop"></div>
+    <div class="dialogue-modal-content">
+        <button class="dialogue-modal-close" id="dialogueModalClose" aria-label="Close">&times;</button>
+        <h2 class="dialogue-modal-title">Iconic Dialogues</h2>
+        <div class="dialogue-list" id="dialogueList">
+            <!-- populated by js/app.js -->
+        </div>
+    </div>
+</div>
+
 <!-- ============ FEATURED PHOTOS (filmstrip) ============ -->
 <section class="filmstrip-section">
     <div class="container">

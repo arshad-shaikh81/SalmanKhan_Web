@@ -10,7 +10,7 @@
    featured: true shows it in the homepage "Featured Photos" filmstrip
    ------------------------------------------------------------- */
 const photos = [
-    { id: 1,  title: "Ek Tha Tiger Poster Still",     category: "movies",    image: "images/movies/tiger-1.jpg",       featured: true },
+    { id: 1,  title: "Ek Tha Tiger Poster Still",       category: "movies",    image: "images/movies/tiger-1.jpg",       featured: true },
     { id: 2,  title: "Dabangg — Chulbul Pandey",      category: "movies",    image: "images/movies/dabangg-1.jpg",       featured: true },
     { id: 3,  title: "Bajrangi Bhaijaan Still",       category: "movies",    image: "images/movies/bajrangi-1.jpg",      featured: true },
     { id: 4,  title: "Sultan — Wrestling Ring",       category: "movies",    image: "images/movies/sultan-1.jpg",        featured: false },
@@ -49,6 +49,22 @@ const movies = [
     { id: "kick",      title: "Kick",                year: "2014",      cover: "images/movies/kick-1.jpg" },
     { id: "ektatiger", title: "Ek Tha Tiger",         year: "2012",      cover: "images/movies/ektha-tiger-1.jpg" },
     { id: "wanted",    title: "Wanted",              year: "2009",      cover: "images/movies/wanted-1.jpg" }
+];
+
+/* -------------------------------------------------------------
+   2b. DIALOGUES DATA
+   To add a new dialogue: just push a new object into this array.
+   NOTE: only "images/dialogues/dialogue-1.jpg" exists on disk right now
+   (used below for the "Ready" quote). Add the remaining stills at the
+   paths below (or rename them) and each card will pick up its real photo
+   automatically — until then those entries fall back to a placeholder.
+   ------------------------------------------------------------- */
+const dialogues = [
+    { quote: "Zindagi mein teen cheez kabhi underestimate nahi karna... I, Me and Myself!", movie: "Ready", image: "images/dialogues/dialogue-1.jpg" },
+    { quote: "Ek baar jo maine commitment kar di, uske baad main khud ki bhi nahi sunta.", movie: "Wanted", image: "images/dialogues/dialogue-2.jpg" },
+    { quote: "Shikar toh sab karte hai Lekin Tiger se behtar Shikar koi nahi karta ...", movie: "Tiger Zinda Hai", image: "images/dialogues/dialogue-3.jpg" },
+    { quote: "Main request nahi karta Ek hi baar bolta hoon aur Full and Final ho jata hai.", movie: "Tere Naam", image: "images/dialogues/dialogue-4.jpg" },
+
 ];
 
 /* -------------------------------------------------------------
@@ -184,7 +200,6 @@ function initMusic() {
    ------------------------------------------------------------- */
 function initHeroEntry() {
     const video = document.querySelector(".hero-video");
-    const audio = document.getElementById("bgMusic");
     if (!video) return;
 
     // Use a separately-cropped portrait video on narrow (mobile) screens
@@ -244,16 +259,133 @@ function initHeroEntry() {
 
     // Start actual playback once, when the clip is ready -- it then keeps
     // looping continuously in the background for as long as the page is open.
+    // The blink cycle now starts right here too, automatically, regardless of
+    // whether background music is playing -- muted video is always allowed
+    // to autoplay, so this no longer waits on the audio's own autoplay status
+    // (which mobile browsers can block until a tap).
     video.addEventListener("canplay", () => {
         video.play().catch(() => {});
         showVideo();
+        startCycle();
     }, { once: true });
+}
 
-    if (!audio) return; // no music element on this page -- video just plays once and stays
+/* -------------------------------------------------------------
+   3e. DIALOGUES: featured quote card + "see all" modal
+   ------------------------------------------------------------- */
+function initDialogues() {
+    const trigger = document.getElementById("dialogueTrigger");
+    const media = document.getElementById("dialogueMedia");
+    const quoteEl = document.getElementById("featuredQuote");
+    const movieEl = document.getElementById("featuredMovie");
+    const modal = document.getElementById("dialogueModal");
+    const backdrop = document.getElementById("dialogueModalBackdrop");
+    const closeBtn = document.getElementById("dialogueModalClose");
+    const list = document.getElementById("dialogueList");
 
-    audio.addEventListener("play", startCycle);
-    audio.addEventListener("pause", stopCycle);
-    audio.addEventListener("ended", stopCycle);
+    if (!trigger || !modal || !dialogues.length) return;
+
+    // Pick one at random to feature on the homepage card
+    const featured = dialogues[Math.floor(Math.random() * dialogues.length)];
+    if (quoteEl) quoteEl.textContent = featured.quote;
+    if (movieEl) movieEl.textContent = `— ${featured.movie}`;
+
+    // These stills already have the quote + movie name burned into the
+    // photo, so we don't render duplicate HTML text on top (quoteEl/movieEl
+    // are hidden via CSS). The dark tint is now a static CSS layer
+    // (.dialogue-card::after) so it never moves with the parallax below --
+    // here we just need to drop the plain photo into its own media layer.
+    if (featured.image && media) {
+        const preload = new Image();
+        preload.onload = () => {
+            media.style.backgroundImage = `url('${featured.image}')`;
+        };
+        preload.onerror = () => {
+            media.style.backgroundImage = `url('https://placehold.co/1200x700/1c1a20/c9a227?text=${encodeURIComponent(featured.movie)}')`;
+        };
+        preload.src = featured.image;
+    }
+
+    list.innerHTML = dialogues.map(d => `
+        <div class="dialogue-list-item">
+            ${d.image ? `<img src="${d.image}" alt="${d.movie} still" loading="lazy" class="dialogue-list-thumb" onerror="this.src='https://placehold.co/160x160/1c1a20/c9a227?text=${encodeURIComponent(d.movie)}'">` : ""}
+            <div class="dialogue-list-text">
+                <p class="quote">${d.quote}</p>
+                <span class="movie">— ${d.movie}</span>
+            </div>
+        </div>
+    `).join("");
+
+    const openModal = () => {
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+    };
+    const closeModal = () => {
+        modal.hidden = true;
+        document.body.style.overflow = "";
+    };
+
+    trigger.addEventListener("click", openModal);
+    trigger.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openModal();
+        }
+    });
+    backdrop.addEventListener("click", closeModal);
+    closeBtn.addEventListener("click", closeModal);
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modal.hidden) closeModal();
+    });
+}
+
+/* -------------------------------------------------------------
+   3f. DIALOGUE IMAGE PARALLAX
+   As the dialogue card scrolls through the viewport, the photo inside
+   it drifts vertically a little slower/faster than the page itself --
+   the classic "image rises up" effect seen on modern portfolio sites.
+   Purely visual: driven by scroll position, throttled with
+   requestAnimationFrame so it stays smooth and cheap.
+   ------------------------------------------------------------- */
+function initDialogueParallax() {
+    const card = document.getElementById("dialogueTrigger");
+    const media = document.getElementById("dialogueMedia");
+    if (!card || !media) return;
+
+    // Respect users who've asked for reduced motion -- just leave the
+    // image static in that case.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const MAX_SHIFT = 36; // px of total vertical drift (subtle, not a full parallax scroll)
+    let ticking = false;
+
+    const update = () => {
+        const rect = card.getBoundingClientRect();
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+
+        // progress: 0 when the card is just entering from the bottom of the
+        // viewport, 1 when it's about to leave from the top.
+        const total = vh + rect.height;
+        let progress = (vh - rect.top) / total;
+        progress = Math.min(1, Math.max(0, progress));
+
+        // Map progress (0..1) to a shift range (-MAX_SHIFT..MAX_SHIFT) so the
+        // photo drifts upward relative to the card as you scroll down past it.
+        const shift = (progress - 0.5) * MAX_SHIFT * 2;
+        media.style.transform = `translateY(${-shift}px)`;
+        ticking = false;
+    };
+
+    const onScroll = () => {
+        if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+        }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update(); // set correct position on load, before any scroll happens
 }
 
 /* -------------------------------------------------------------
@@ -310,14 +442,12 @@ function renderCategories() {
 
     grid.innerHTML = categoryMeta.map(cat => {
         const sample = photos.find(p => p.category === cat.key);
-        const count = photos.filter(p => p.category === cat.key).length;
         return `
       <a href="gallery.html?category=${cat.key}" class="category-card fade-up">
         <img src="${sample ? sample.image : ''}" alt="${cat.label} category cover" loading="lazy"
              onerror="this.src='https://placehold.co/400x500/1c1a20/c9a227?text=${encodeURIComponent(cat.label)}'">
         <div class="category-overlay">
           <h3>${cat.label}</h3>
-          <span>${count} photo${count !== 1 ? "s" : ""} · ${cat.desc}</span>
         </div>
       </a>
     `;
@@ -332,6 +462,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initHero();
     initHeroEntry();
     initMusic();
+    initDialogues();
+    initDialogueParallax();
     renderFilmstrip();
     renderCategories();
     initScrollReveal();

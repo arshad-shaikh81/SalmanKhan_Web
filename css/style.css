@@ -354,6 +354,156 @@ button:focus-visible,
 
 .hero-actions { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
 
+/* -------------------- Featured Dialogue -------------------- */
+.dialogue-section {
+    padding: var(--space-lg) 0;
+}
+
+/* Poster-style card: the still image leads, bold text is punched
+   directly on top of it near the bottom (like a movie quote card),
+   instead of the whole photo being washed under a heavy dark tint. */
+.dialogue-card {
+    position: relative;
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    aspect-ratio: 16 / 10;
+    min-height: unset;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg) var(--space-md) var(--space-md);
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden; /* clips the media layer as it drifts on scroll */
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+.dialogue-card:hover,
+.dialogue-card:focus-visible {
+    border-color: var(--color-gold);
+    transform: translateY(-3px);
+}
+
+/* Image lives in its own layer, oversized with extra top/bottom bleed,
+   so app.js can translateY it a little as the page scrolls (parallax)
+   without ever revealing empty edges inside the card. */
+.dialogue-card-media {
+    position: absolute;
+    left: 0; right: 0;
+    top: -10%;
+    bottom: -10%;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+    will-change: transform;
+}
+
+/* Even dark tint over the whole image (kept separate from the media layer
+   itself so it never drifts with the parallax) — the still already carries
+   its own baked-in text, this just keeps it from looking bright/washed
+   out against the rest of the dark page. */
+.dialogue-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(0deg, rgba(11,11,13,0.55) 0%, rgba(11,11,13,0.4) 60%, rgba(11,11,13,0.4) 100%);
+}
+
+/* The still image already has the quote + movie name burned into the
+   photo itself, so we no longer duplicate that text in HTML on top of
+   it — these are hidden. Only the small "tap to see all" CTA remains. */
+.dialogue-quote,
+.dialogue-movie {
+    display: none;
+}
+
+.dialogue-cta {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    color: rgba(245,242,234,0.85);
+    font-size: var(--fs-small);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+}
+
+/* -------------------- All Dialogues Modal -------------------- */
+.dialogue-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+}
+.dialogue-modal[hidden] { display: none; }
+
+.dialogue-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.dialogue-modal-content {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg) var(--space-md) var(--space-md);
+}
+
+.dialogue-modal-close {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    font-size: 1.8rem;
+    line-height: 1;
+    color: var(--color-text-muted);
+}
+.dialogue-modal-close:hover { color: var(--color-gold-light); }
+
+.dialogue-modal-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    margin-bottom: var(--space-md);
+    color: var(--color-gold-light);
+}
+
+.dialogue-list-item {
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+.dialogue-list-item:last-child { border-bottom: none; }
+
+.dialogue-list-item .quote {
+    font-family: var(--font-display);
+    font-style: italic;
+    margin-bottom: 4px;
+    line-height: 1.5;
+}
+.dialogue-list-item .quote::before { content: '\201C'; }
+.dialogue-list-item .quote::after { content: '\201D'; }
+
+.dialogue-list-item .movie {
+    display: block;
+    color: var(--color-gold);
+    font-size: var(--fs-small);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
 /* -------------------- Filmstrip (signature element) -------------------- */
 .filmstrip-section {
     padding: var(--space-lg) 0;
@@ -398,9 +548,9 @@ button:focus-visible,
 
 .film-frame .film-caption {
     position: absolute;
-    bottom: 18px; left: 0; right: 0;
-    padding: 0.6rem 0.9rem;
-    background: linear-gradient(0deg, rgba(0,0,0,0.85), transparent);
+    bottom: 0; left: 0; right: 0;
+    padding: 1.4rem 0.9rem 0.9rem;
+    background: linear-gradient(0deg, rgba(0,0,0,0.92) 25%, transparent 100%);
     font-size: var(--fs-small);
     letter-spacing: 0.04em;
     z-index: 3;
