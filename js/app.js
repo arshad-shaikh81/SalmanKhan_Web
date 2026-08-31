@@ -33,7 +33,19 @@ const photos = [
 
     { id: 18, title: "Golden Hour Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-1.jpg", downloadable: true },
     { id: 19, title: "Cinematic Poster Wallpaper",    category: "wallpapers", image: "images/wallpapers/wallpaper.jpg", downloadable: true },
-    { id: 20, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-3.jpg", downloadable: true }
+    { id: 20, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-2.jpg", downloadable: true },
+    { id: 21, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-3.jpg", downloadable: true },
+    { id: 22, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-0.jpg", downloadable: true },
+    { id: 23, title: "Wallpaper-4",         category: "wallpapers", image: "images/wallpapers/wallpaper-4.jpg", downloadable: true },
+    { id: 24, title: "Wallpaper-5",         category: "wallpapers", image: "images/wallpapers/wallpaper-5.jpg", downloadable: true },
+    { id: 25, title: "Wallpaper-6",         category: "wallpapers", image: "images/wallpapers/wallpaper-6.jpg", downloadable: true },
+    { id: 26, title: "Wallpaper-7",         category: "wallpapers", image: "images/wallpapers/wallpaper-7.jpg", downloadable: true },
+    { id: 27, title: "Wallpaper-8",         category: "wallpapers", image: "images/wallpapers/wallpaper-8.jpg", downloadable: true },
+    { id: 28, title: "Wallpaper-9",         category: "wallpapers", image: "images/wallpapers/wallpaper-9.jpg", downloadable: true },
+    { id: 29, title: "Wallpaper-10",         category: "wallpapers", image: "images/wallpapers/wallpaper-10.jpg", downloadable: true },
+    { id: 30, title: "Wallpaper-11",         category: "wallpapers", image: "images/wallpapers/wallpaper-11.jpg", downloadable: true },
+
+
 ];
 
 /* -------------------------------------------------------------
