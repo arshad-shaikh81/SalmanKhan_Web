@@ -32,7 +32,7 @@ const photos = [
     { id: 17, title: "Debut Years Throwback",         category: "old-photos", image: "images/old-photos/old-3.jpg",      featured: false },
 
     { id: 18, title: "Golden Hour Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-1.jpg", downloadable: true },
-    { id: 19, title: "Cinematic Poster Wallpaper",    category: "wallpapers", image: "images/wallpapers/wallpaper-2.jpg", downloadable: true },
+    { id: 19, title: "Cinematic Poster Wallpaper",    category: "wallpapers", image: "images/wallpapers/wallpaper.jpg", downloadable: true },
     { id: 20, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-3.jpg", downloadable: true }
 ];
 
@@ -607,10 +607,14 @@ function renderCategories() {
         { key: "wallpapers", label: "Wallpapers", desc: "HD downloads" }
     ];
 
+    // Wallpapers has its own dedicated page (wallpapers.html); the rest
+    // still point at gallery.html?category=... until that page exists.
+    const linkFor = (key) => key === "wallpapers" ? "wallpapers.html" : `gallery.html?category=${key}`;
+
     grid.innerHTML = categoryMeta.map(cat => {
         const sample = photos.find(p => p.category === cat.key);
         return `
-      <a href="gallery.html?category=${cat.key}" class="category-card fade-up">
+      <a href="${linkFor(cat.key)}" class="category-card fade-up">
         <img src="${sample ? sample.image : ''}" alt="${cat.label} category cover" loading="lazy"
              onerror="this.src='https://placehold.co/400x500/1c1a20/c9a227?text=${encodeURIComponent(cat.label)}'">
         <div class="category-overlay">
@@ -619,6 +623,62 @@ function renderCategories() {
       </a>
     `;
     }).join("");
+}
+
+/* -------------------------------------------------------------
+   5b. WALLPAPERS PAGE RENDERER (used on wallpapers.html)
+   Renders every photo flagged downloadable:true with a working
+   "Download" button (forces a save instead of opening the image).
+   ------------------------------------------------------------- */
+function renderWallpapers() {
+    const grid = document.querySelector("[data-wallpaper-grid]");
+    if (!grid) return;
+
+    const wallpapers = photos.filter(p => p.category === "wallpapers");
+
+    grid.innerHTML = wallpapers.map(photo => `
+      <figure class="wallpaper-card fade-up">
+        <img src="${photo.image}" alt="${photo.title}" loading="lazy"
+             onerror="this.src='https://placehold.co/720x1280/1c1a20/c9a227?text=${encodeURIComponent(photo.title)}'">
+        <figcaption class="wallpaper-overlay">
+          <button type="button" class="btn btn-primary wallpaper-download" data-download="${photo.image}" data-name="${photo.title}">
+            Download
+          </button>
+        </figcaption>
+      </figure>
+    `).join("");
+
+    // Delegate click so it still works after the innerHTML re-render above.
+    grid.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".wallpaper-download");
+        if (!btn) return;
+
+        const url = btn.dataset.download;
+        const name = (btn.dataset.name || "wallpaper").replace(/\s+/g, "-").toLowerCase();
+
+        try {
+            // Fetch as a blob so the browser saves the file instead of
+            // just navigating to/opening the image in a new tab.
+            const res = await fetch(url);
+            const blob = await res.blob();
+            const blobUrl = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = `${name}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+            // Fallback: plain download attribute (works for same-origin
+            // images even if the fetch above fails for some reason).
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${name}.jpg`;
+            link.click();
+        }
+    });
 }
 
 /* -------------------------------------------------------------
@@ -635,6 +695,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initTimelineProgress();
     renderFilmstrip();
     renderCategories();
+    renderWallpapers();
     initScrollReveal();
 
     // Set active nav link based on current page
