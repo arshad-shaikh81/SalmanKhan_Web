@@ -62,9 +62,8 @@ const movies = [
 const dialogues = [
     { quote: "Zindagi mein teen cheez kabhi underestimate nahi karna... I, Me and Myself!", movie: "Ready", image: "images/dialogues/dialogue-1.jpg" },
     { quote: "Ek baar jo maine commitment kar di, uske baad main khud ki bhi nahi sunta.", movie: "Wanted", image: "images/dialogues/dialogue-2.jpg" },
-    { quote: "Shikar toh sab karte hai Lekin Tiger se behtar Shikar koi nahi karta ...", movie: "Tiger Zinda Hai", image: "images/dialogues/dialogue-3.jpg" },
-    { quote: "Main request nahi karta Ek hi baar bolta hoon aur Full and Final ho jata hai.", movie: "Tere Naam", image: "images/dialogues/dialogue-4.jpg" },
-
+    { quote: "Shikar toh sab karte hai Lekin Tiger se behtar shikar koi nahi karta...", movie: "Tiger Zinda Hai", image: "images/dialogues/dialogue-3.jpg" },
+    { quote: "Mai request nahi karta sirf ek hi baar bolta hoon.. aur Fool or Final ho jata hai.", movie: "Tere Namm", image: "images/dialogues/dialogue-4.jpg" },
 ];
 
 /* -------------------------------------------------------------
@@ -202,11 +201,15 @@ function initHeroEntry() {
     const video = document.querySelector(".hero-video");
     if (!video) return;
 
-    // Use a separately-cropped portrait video on narrow (mobile) screens
-    // so the subject stays framed, instead of relying on CSS crop alone.
+    // On phones, skip the video/blink animation entirely -- just show the
+    // static photo. Music (initMusic) is unaffected and still plays.
     const isMobile = window.matchMedia("(max-width: 600px)").matches;
-    const mobileSrc = video.dataset.srcMobile;
-    const src = (isMobile && mobileSrc) ? mobileSrc : video.dataset.src;
+    if (isMobile) {
+        video.style.display = "none";
+        return;
+    }
+
+    const src = video.dataset.src;
     if (!src) return;
 
     const CYCLE_MS = 150;         // milliseconds each state (video / photo) stays visible -- rapid strobe blink
@@ -271,7 +274,8 @@ function initHeroEntry() {
 }
 
 /* -------------------------------------------------------------
-   3e. DIALOGUES: featured quote card + "see all" modal
+   3e. DIALOGUES: featured quote card (auto-rotating every ~3s) +
+   "see all" modal
    ------------------------------------------------------------- */
 function initDialogues() {
     const trigger = document.getElementById("dialogueTrigger");
@@ -285,25 +289,52 @@ function initDialogues() {
 
     if (!trigger || !modal || !dialogues.length) return;
 
-    // Pick one at random to feature on the homepage card
-    const featured = dialogues[Math.floor(Math.random() * dialogues.length)];
-    if (quoteEl) quoteEl.textContent = featured.quote;
-    if (movieEl) movieEl.textContent = `— ${featured.movie}`;
+    const ROTATE_MS = 3000;   // how long each dialogue stays on screen
+    const FADE_MS = 350;      // must match the CSS transition on .dialogue-card-media
+    let currentIndex = Math.floor(Math.random() * dialogues.length);
+    let rotateTimer = null;
 
-    // These stills already have the quote + movie name burned into the
-    // photo, so we don't render duplicate HTML text on top (quoteEl/movieEl
-    // are hidden via CSS). The dark tint is now a static CSS layer
-    // (.dialogue-card::after) so it never moves with the parallax below --
-    // here we just need to drop the plain photo into its own media layer.
-    if (featured.image && media) {
+    // Renders one dialogue onto the featured card. The still already has
+    // the quote + movie name burned into the photo, so quoteEl/movieEl are
+    // hidden via CSS -- their text is still set for accessibility (screen
+    // readers / the modal aria-label) and in case they're re-enabled later.
+    const showDialogue = (index) => {
+        const item = dialogues[index];
+        if (quoteEl) quoteEl.textContent = item.quote;
+        if (movieEl) movieEl.textContent = `— ${item.movie}`;
+
+        if (!item.image || !media) return;
+
         const preload = new Image();
-        preload.onload = () => {
-            media.style.backgroundImage = `url('${featured.image}')`;
+        const applyImage = (url) => {
+            // Fade the current image out, swap the background once it's
+            // fully transparent, then fade the new one back in.
+            media.style.opacity = "0";
+            setTimeout(() => {
+                media.style.backgroundImage = `url('${url}')`;
+                media.style.opacity = "1";
+            }, FADE_MS);
         };
-        preload.onerror = () => {
-            media.style.backgroundImage = `url('https://placehold.co/1200x700/1c1a20/c9a227?text=${encodeURIComponent(featured.movie)}')`;
-        };
-        preload.src = featured.image;
+        preload.onload = () => applyImage(item.image);
+        preload.onerror = () => applyImage(`https://placehold.co/1200x700/1c1a20/c9a227?text=${encodeURIComponent(item.movie)}`);
+        preload.src = item.image;
+    };
+
+    // Show the first one immediately (no fade needed on initial load)
+    if (dialogues[currentIndex].image && media) {
+        media.style.backgroundImage = `url('${dialogues[currentIndex].image}')`;
+    }
+    if (quoteEl) quoteEl.textContent = dialogues[currentIndex].quote;
+    if (movieEl) movieEl.textContent = `— ${dialogues[currentIndex].movie}`;
+
+    // Auto-rotate through the remaining dialogues every ROTATE_MS, unless
+    // the visitor prefers reduced motion (then it just stays on the first one).
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (dialogues.length > 1 && !prefersReducedMotion) {
+        rotateTimer = setInterval(() => {
+            currentIndex = (currentIndex + 1) % dialogues.length;
+            showDialogue(currentIndex);
+        }, ROTATE_MS);
     }
 
     list.innerHTML = dialogues.map(d => `
@@ -405,7 +436,7 @@ function initScrollReveal() {
                 observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.1, rootMargin: "0px 0px -60px 0px" });
 
     items.forEach(el => observer.observe(el));
 }

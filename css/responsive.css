@@ -53,6 +53,33 @@
     .footer-grid { flex-direction: column; }
 
     .film-frame { width: 190px; }
+
+    /* .categories-section (and siblings sharing the rule) use --space-xl
+       (6rem) top AND bottom padding, which then stacks with the footer's
+       own top padding right after it. On desktop that's barely visible;
+       on a narrow phone with little else around it, it reads as a big
+       broken black gap before the footer. Tighten both here. */
+    .categories-section,
+    .about-section,
+    .footer-cta {
+        padding: var(--space-lg) 0;
+    }
+
+    .site-footer {
+        padding-top: var(--space-md);
+    }
+
+    /* Slightly shorter cards so a single-column grid doesn't feel oversized */
+    .category-card {
+        aspect-ratio: 4 / 3.4;
+    }
+
+    /* Video/blink entry animation is skipped entirely on phones (see
+       initHeroEntry in app.js) -- hidden here too so there's no flash of
+       the video before JS runs. Music still plays as normal. */
+    .hero-video {
+        display: none;
+    }
 }
 
 /* Small mobile (≤ 380px) */

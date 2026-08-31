@@ -398,7 +398,9 @@ button:focus-visible,
     background-size: cover;
     background-position: center;
     z-index: 0;
-    will-change: transform;
+    opacity: 1;
+    will-change: transform, opacity;
+    transition: opacity 0.35s ease;
 }
 
 /* Even dark tint over the whole image (kept separate from the media layer
