@@ -80,6 +80,30 @@
     .hero-video {
         display: none;
     }
+
+    /* About page: stack the bio photo above the text, single-column
+       stats, and pull the timeline in a bit so it doesn't feel cramped
+       against the edge of a narrow screen. */
+    .bio-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bio-photo {
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .page-title {
+        font-size: clamp(2rem, 8vw, 2.8rem);
+    }
+
+    .timeline {
+        padding-left: var(--space-sm);
+    }
 }
 
 /* Small mobile (≤ 380px) */

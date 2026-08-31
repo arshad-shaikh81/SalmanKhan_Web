@@ -663,6 +663,227 @@ button:focus-visible,
     transform: translateY(0);
 }
 
+/* -------------------- About Page: Header -------------------- */
+.page-header {
+    padding: calc(var(--space-xl) + 3rem) 0 var(--space-lg);
+    text-align: center;
+}
+
+.page-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-hero);
+    line-height: 1.1;
+    font-weight: 700;
+    background: linear-gradient(180deg, #fff 20%, var(--color-gold-light) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: var(--space-sm);
+}
+
+.page-sub {
+    color: var(--color-text-muted);
+    max-width: 620px;
+    margin: 0 auto;
+    font-size: 1.05rem;
+}
+
+/* -------------------- About Page: Bio -------------------- */
+.bio-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: var(--space-lg);
+    align-items: start;
+}
+
+.bio-photo {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    aspect-ratio: 4 / 5;
+    background: var(--color-bg-elevated);
+}
+
+.bio-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bio-text p {
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+    max-width: 640px;
+}
+
+.bio-text strong {
+    color: var(--color-gold-light);
+    font-weight: 600;
+}
+
+/* -------------------- About Page: Career Highlights -------------------- */
+.stats-section {
+    padding: var(--space-xl) 0;
+    background: var(--color-bg-alt);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.stat-card {
+    text-align: center;
+    padding: var(--space-md) var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-elevated);
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.stat-card:hover {
+    border-color: var(--color-gold);
+    transform: translateY(-4px);
+}
+
+.stat-number {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    color: var(--color-gold-light);
+    margin-bottom: 0.35rem;
+}
+
+/* Brief pop once the count-up animation (app.js) finishes on a number */
+.stat-number.counted {
+    animation: stat-pop 0.4s ease;
+}
+
+@keyframes stat-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+.stat-label {
+    display: block;
+    font-size: var(--fs-small);
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+}
+
+/* -------------------- About Page: Timeline -------------------- */
+.timeline-section {
+    padding: var(--space-xl) 0;
+}
+
+/* Bio photo gets a slightly richer reveal than the default fade-up --
+   a gentle scale-in alongside the rise, so it feels a touch more premium. */
+.bio-photo.fade-up {
+    transform: translateY(24px) scale(0.96);
+}
+.bio-photo.fade-up.in-view {
+    transform: translateY(0) scale(1);
+}
+
+.timeline {
+    position: relative;
+    margin-top: var(--space-lg);
+    padding-left: var(--space-md);
+}
+
+/* Dim static track, always fully visible */
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: rgba(201, 162, 39, 0.15);
+}
+
+/* Bright glowing line that "draws" itself downward as you scroll --
+   height is driven by the --tl-progress custom property, set in app.js
+   (initTimelineProgress). transform-origin: top means it grows from the
+   first milestone down to the last as you scroll through the section. */
+.timeline::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 6px;
+    width: 2px;
+    height: calc(100% - 12px);
+    background: linear-gradient(180deg, var(--color-gold-light), var(--color-gold));
+    box-shadow: 0 0 10px rgba(201, 162, 39, 0.55);
+    transform: scaleY(var(--tl-progress, 0));
+    transform-origin: top;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: var(--space-md);
+    padding-bottom: var(--space-lg);
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -5px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+    box-shadow: 0 0 0 4px var(--color-bg), 0 0 0 5px var(--color-border);
+    transition: background var(--transition-med), box-shadow var(--transition-med);
+}
+
+/* Once a milestone has scrolled into view (its .fade-up gets .in-view),
+   the dot lights up gold and gives a brief glowing pulse -- reads as the
+   timeline "arriving" at that point rather than just fading in flatly. */
+.timeline-item.in-view .timeline-dot {
+    background: var(--color-gold-light);
+    box-shadow: 0 0 0 4px var(--color-bg), 0 0 0 5px var(--color-gold), 0 0 14px 2px rgba(201, 162, 39, 0.7);
+    animation: timeline-dot-pulse 1s ease-out;
+}
+
+@keyframes timeline-dot-pulse {
+    0% { transform: scale(0.6); }
+    50% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+.timeline-year {
+    display: inline-block;
+    color: var(--color-gold);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.timeline-content h3 {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    margin-bottom: 0.3rem;
+    color: var(--color-text);
+}
+
+.timeline-content p {
+    color: var(--color-text-muted);
+    max-width: 560px;
+}
+
 /* -------------------- Music Toggle -------------------- */
 .music-toggle {
     position: fixed;

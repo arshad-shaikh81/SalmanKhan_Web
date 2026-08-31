@@ -442,6 +442,142 @@ function initScrollReveal() {
 }
 
 /* -------------------------------------------------------------
+   4b. STAT COUNTERS (About page)
+   Numbers count up from 0 to their data-target value once they scroll
+   into view, then get a small "pop" for a satisfying finish.
+   ------------------------------------------------------------- */
+function initStatCounters() {
+    const numbers = document.querySelectorAll(".stat-number[data-target]");
+    if (!numbers.length) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const animateCount = (el) => {
+        const target = parseInt(el.dataset.target, 10) || 0;
+        const suffix = el.dataset.suffix || "";
+
+        if (prefersReducedMotion) {
+            el.textContent = target + suffix;
+            return;
+        }
+
+        const DURATION = 1200;
+        const start = performance.now();
+
+        const tick = (now) => {
+            const elapsed = now - start;
+            const progress = Math.min(1, elapsed / DURATION);
+            const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+            const current = Math.round(target * eased);
+            el.textContent = current + suffix;
+
+            if (progress < 1) {
+                requestAnimationFrame(tick);
+            } else {
+                el.textContent = target + suffix;
+                el.classList.add("counted");
+            }
+        };
+
+        requestAnimationFrame(tick);
+    };
+
+    if (!("IntersectionObserver" in window)) {
+        numbers.forEach(animateCount);
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCount(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    numbers.forEach(el => observer.observe(el));
+}
+
+/* -------------------------------------------------------------
+   4c. TIMELINE PROGRESS LINE (About page)
+   The gold line down the timeline "draws" itself as you scroll through
+   the section (via the --tl-progress CSS variable), and each milestone's
+   dot lights up with a pulse once it scrolls into view.
+   ------------------------------------------------------------- */
+function initTimelineProgress() {
+    const timeline = document.querySelector(".timeline");
+    if (!timeline) return;
+
+    const dots = timeline.querySelectorAll(".timeline-dot");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!dots.length) return;
+
+    if (prefersReducedMotion) {
+        timeline.style.setProperty("--tl-progress", "1");
+    } else {
+        const firstDot = dots[0];
+        const lastDot = dots[dots.length - 1];
+        let ticking = false;
+
+        // Progress is measured between the first and last dot's actual
+        // on-screen position (not a fixed scroll-distance guess), so the
+        // line reliably reaches 100% once the last milestone has scrolled
+        // up to the reference line -- regardless of how much extra page
+        // there is to scroll past the timeline.
+        const update = () => {
+            const vh = window.innerHeight || document.documentElement.clientHeight;
+            const refY = vh * 0.65; // the point on screen a dot counts as "reached"
+            const firstY = firstDot.getBoundingClientRect().top;
+            const lastY = lastDot.getBoundingClientRect().top;
+
+            let progress;
+            if (lastY === firstY) {
+                progress = 1;
+            } else {
+                progress = (refY - firstY) / (lastY - firstY);
+            }
+            progress = Math.min(1, Math.max(0, progress));
+            timeline.style.setProperty("--tl-progress", progress);
+            ticking = false;
+        };
+
+        const onScroll = () => {
+            if (!ticking) {
+                requestAnimationFrame(update);
+                ticking = true;
+            }
+        };
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll);
+        update();
+    }
+
+    // Mark each milestone as in-view (for the dot glow/pulse) using the
+    // same reveal moment as its fade-up animation.
+    const items = document.querySelectorAll(".timeline-item");
+    if (!items.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+        items.forEach(el => el.classList.add("in-view"));
+        return;
+    }
+
+    const dotObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("in-view");
+                dotObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.4 });
+
+    items.forEach(el => dotObserver.observe(el));
+}
+
+/* -------------------------------------------------------------
    5. HOMEPAGE RENDERERS: featured filmstrip + popular categories
    ------------------------------------------------------------- */
 function renderFilmstrip() {
@@ -451,7 +587,7 @@ function renderFilmstrip() {
     const featured = photos.filter(p => p.featured);
 
     track.innerHTML = featured.map(photo => `
-    <figure class="film-frame fade-up" tabindex="0" aria-label="${photo.title}">
+    <figure class="film-frame" tabindex="0" aria-label="${photo.title}">
       <img src="${photo.image}" alt="${photo.title}" loading="lazy" width="280" height="373"
            onerror="this.src='https://placehold.co/560x746/1c1a20/c9a227?text=Salman+Khan&font=playfair-display'">
       <figcaption class="film-caption">${photo.title}</figcaption>
@@ -495,6 +631,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initMusic();
     initDialogues();
     initDialogueParallax();
+    initStatCounters();
+    initTimelineProgress();
     renderFilmstrip();
     renderCategories();
     initScrollReveal();
