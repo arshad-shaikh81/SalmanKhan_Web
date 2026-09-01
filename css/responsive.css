@@ -36,6 +36,9 @@
     .film-frame {
         width: 220px;
     }
+
+    /* Wallpaper grid: at tablet width, minmax(260px,1fr) still only fits
+       2-3 per row depending on width -- fine as-is, left to auto-fit. */
 }
 
 /* Mobile (≤ 600px) */
@@ -104,6 +107,26 @@
     .timeline {
         padding-left: var(--space-sm);
     }
+
+    /* Wallpapers page: the base .wallpaper-grid rule uses
+       minmax(260px, 1fr), so on a ~360-400px phone width only ONE card
+       fits per row -- it looks like the page is "stuck" showing a single
+       wallpaper even though the rest are just below the fold. Switch to
+       a fixed 2-column layout here so more are visible at once, and
+       shrink the gap/aspect-ratio a bit so each card isn't oversized. */
+    .wallpaper-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+
+    .wallpaper-card {
+        aspect-ratio: 9/14;
+    }
+
+    .wallpaper-download {
+        padding: 0.5rem 0.9rem;
+        font-size: 0.7rem;
+    }
 }
 
 /* Small mobile (≤ 380px) */
@@ -113,6 +136,12 @@
     .logo { font-size: 1.1rem; }
     .hero-eyebrow { letter-spacing: 0.15em; font-size: 0.7rem; }
     .btn { padding: 0.75rem 1.4rem; font-size: 0.78rem; }
+
+    /* Even on very small phones, keep 2 columns rather than dropping
+       back to 1 -- cards just get a bit narrower, still readable. */
+    .wallpaper-grid {
+        gap: 0.6rem;
+    }
 }
 
 /* Very small / older devices (≤ 320px) */

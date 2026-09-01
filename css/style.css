@@ -1088,15 +1088,22 @@ button:focus-visible,
     font-weight: 600;
 }
 
+/* Mobile: poster now keeps its natural portrait shape (matches the
+   source images, e.g. 4:5) instead of being force-cropped into a wide
+   16:9 box -- that was cutting off faces/text baked into the posters.
+   Capped width + centered so it doesn't stretch edge-to-edge on wider
+   phones either. */
 @media (max-width: 480px) {
     .movie-detail-card {
         flex-direction: column;
     }
     .movie-detail-poster {
         width: 100%;
-        aspect-ratio: 16/9;
+        max-width: 320px;
+        margin: 0 auto;
+        aspect-ratio: 4/5;
         object-fit: cover;
-        object-position: top;
+        object-position: center;
     }
 }
 

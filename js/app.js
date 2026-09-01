@@ -778,8 +778,10 @@ function renderWallpapers() {
 
 /* -------------------------------------------------------------
    5c. MOVIES PAGE RENDERER (used on movies.html)
-   Top grid = movie posters (from the `movies` array), each linking
-   to movie-detail.html?id=<movieId> for the full description + OTT.
+   Every movie now gets its OWN separate heading (its year), even if
+   another movie shares the same release year -- movies are no longer
+   merged/grouped under one shared year heading. Sort dropdown still
+   works exactly as before (it just calls this function again).
    ------------------------------------------------------------- */
 function renderMoviesPage(sortOrder) {
     const movieGrid = document.querySelector("[data-movie-grid]");
@@ -791,34 +793,20 @@ function renderMoviesPage(sortOrder) {
         .filter(m => m.popular)
         .sort((a, b) => order === "newest" ? b.sortYear - a.sortYear : a.sortYear - b.sortYear);
 
-    // Group movies sharing a year under one heading (e.g. 2010: Veer, Dabangg)
-    // instead of one flat grid.
-    const groups = [];
-    popularMovies.forEach(m => {
-        const lastGroup = groups[groups.length - 1];
-        if (lastGroup && lastGroup.year === m.year) {
-            lastGroup.items.push(m);
-        } else {
-            groups.push({ year: m.year, items: [m] });
-        }
-    });
-
-    movieGrid.innerHTML = groups.map(group => `
+    movieGrid.innerHTML = popularMovies.map(m => `
       <div class="movie-year-group">
-        <h3 class="movie-year-heading">${group.year}</h3>
+        <h3 class="movie-year-heading">${m.year}</h3>
         <div class="movie-year-row">
-          ${group.items.map(m => `
-            <a href="movie-detail.html?id=${m.id}" class="movie-card">
-              <span class="movie-poster">
-                <img src="${m.cover}" alt="${m.title}" loading="lazy"
-                     onerror="this.src='https://placehold.co/400x500/1c1a20/c9a227?text=${encodeURIComponent(m.title)}'">
-              </span>
-              <span class="movie-meta">
-                <span class="movie-name">${m.title}</span>
-                <span class="movie-year">${m.year}</span>
-              </span>
-            </a>
-          `).join("")}
+          <a href="movie-detail.html?id=${m.id}" class="movie-card">
+            <span class="movie-poster">
+              <img src="${m.cover}" alt="${m.title}" loading="lazy"
+                   onerror="this.src='https://placehold.co/400x500/1c1a20/c9a227?text=${encodeURIComponent(m.title)}'">
+            </span>
+            <span class="movie-meta">
+              <span class="movie-name">${m.title}</span>
+              <span class="movie-year">${m.year}</span>
+            </span>
+          </a>
         </div>
       </div>
     `).join("");
