@@ -174,7 +174,9 @@ const dialogues = [
 const bgmTracks = [
     { title: "Ek Tha Tiger",  movie: "Ek Tha Tiger",  src: "assets/audio/ekthatiger.mp3" },
     { title: "Radhe",         movie: "Radhe",         src: "assets/audio/radhe.mp3" },
-    { title: "Sikandar",      movie: "Sikandar",      src: "assets/audio/sikandar.mp3" }
+    { title: "Sikandar",      movie: "Sikandar",      src: "assets/audio/sikandar.mp3" },
+    { title: "Tere Naam BGM",      movie: "Tere Naam",      src: "assets/audio/terenaam.mp3" },
+    { title: "Dabangg Chulbul Pandey",      movie: "Dabangg",      src: "assets/audio/dabangg.mp3" }
 ];
 
 /* -------------------------------------------------------------
