@@ -17,6 +17,99 @@
 
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
+
+    <!-- Sort dropdown styling is embedded here directly (rather than relying
+         on css/style.css) so the button/menu always render correctly even
+         if that file hasn't been updated yet. -->
+    <style>
+        .movies-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 2rem;
+        }
+        .sort-dropdown {
+            position: relative;
+        }
+        .sort-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #1c1a20;
+            color: #e8c766;
+            border: 1px solid rgba(201, 162, 39, 0.18);
+            border-radius: 999px;
+            padding: 0.6rem 1.3rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+        .sort-btn:hover,
+        .sort-btn[aria-expanded="true"] {
+            border-color: #c9a227;
+            background: rgba(201, 162, 39, 0.15);
+        }
+        .sort-caret {
+            transition: transform 0.2s ease;
+        }
+        .sort-btn[aria-expanded="true"] .sort-caret {
+            transform: rotate(180deg);
+        }
+        .sort-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 20;
+            min-width: 220px;
+            background: #1c1a20;
+            border: 1px solid rgba(201, 162, 39, 0.18);
+            border-radius: 10px;
+            padding: 0.35rem;
+            box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+        }
+        .sort-option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            color: #a8a49c;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            padding: 0.75rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .sort-option:hover {
+            background: rgba(201, 162, 39, 0.15);
+            color: #f5f2ea;
+        }
+        .sort-option.active {
+            background: rgba(201, 162, 39, 0.15);
+            color: #e8c766;
+            font-weight: 600;
+        }
+        .movie-year-group {
+            margin-bottom: 4rem;
+        }
+        .movie-year-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: #e8c766;
+            margin-bottom: 1rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.18);
+        }
+        .movie-year-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+    </style>
 </head>
 <body>
 
@@ -52,6 +145,21 @@
 <!-- ============ MOVIE SELECTOR ============ -->
 <section class="movies-section">
     <div class="container">
+        <div class="movies-toolbar">
+            <div class="sort-dropdown" id="sortDropdown">
+                <button type="button" class="sort-btn" id="sortToggle" aria-haspopup="true" aria-expanded="false">
+                    <span>Sort by</span>
+                    <svg class="sort-caret" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                        <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="sort-menu" id="sortMenu" style="display: none;">
+                    <button type="button" class="sort-option active" data-value="oldest">Oldest to Newest</button>
+                    <button type="button" class="sort-option" data-value="newest">Newest to Oldest</button>
+                </div>
+            </div>
+        </div>
+
         <div class="movie-selector" data-movie-grid></div>
     </div>
 </section>

@@ -1108,24 +1108,3 @@ button:focus-visible,
     color: var(--color-text-muted);
     padding: var(--space-md) 0;
 }
-
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-bottom: var(--space-sm);
-    padding: 0.5rem 1.1rem;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    background: var(--color-bg-elevated);
-    color: var(--color-gold-light);
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: border-color var(--transition-fast), transform var(--transition-fast);
-}
-
-.back-button:hover {
-    border-color: var(--color-gold);
-    transform: translateX(-2px);
-}

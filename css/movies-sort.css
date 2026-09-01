@@ -1,0 +1,103 @@
+/* -------------------- Movies Page: Sort Dropdown + Year Groups -------------------- */
+/* Add this block to the end of css/style.css (replaces the earlier
+   .movies-toolbar / .sort-select / .sort-label rules if you added those) */
+
+.movies-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--space-md);
+}
+
+.sort-dropdown {
+    position: relative;
+}
+
+.sort-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-bg-elevated);
+    color: var(--color-gold-light);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.6rem 1.3rem;
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.sort-btn:hover,
+.sort-btn[aria-expanded="true"] {
+    border-color: var(--color-gold);
+    background: var(--color-gold-soft);
+}
+
+.sort-caret {
+    transition: transform var(--transition-fast);
+}
+
+.sort-btn[aria-expanded="true"] .sort-caret {
+    transform: rotate(180deg);
+}
+
+.sort-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 20;
+    min-width: 220px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.35rem;
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+.sort-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.sort-option:hover {
+    background: var(--color-gold-soft);
+    color: var(--color-text);
+}
+
+.sort-option.active {
+    background: var(--color-gold-soft);
+    color: var(--color-gold-light);
+    font-weight: 600;
+}
+
+.movie-year-group {
+    margin-bottom: var(--space-lg);
+}
+
+.movie-year-heading {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    color: var(--color-gold-light);
+    margin-bottom: var(--space-sm);
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.movie-year-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--space-sm);
+}

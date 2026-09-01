@@ -31,44 +31,116 @@ const photos = [
     { id: 16, title: "Maine Pyar Kiya Era",           category: "old-photos", image: "images/old-photos/old-2.jpg",      featured: false },
     { id: 17, title: "Debut Years Throwback",         category: "old-photos", image: "images/old-photos/old-3.jpg",      featured: false },
 
-    { id: 18, title: "Golden Hour Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-1.jpg", downloadable: true },
-    { id: 19, title: "Cinematic Poster Wallpaper",    category: "wallpapers", image: "images/wallpapers/wallpaper-2.jpg", downloadable: true },
-    { id: 20, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-3.jpg", downloadable: true }
+    { id: 18, title: "Wallpaper 1",  category: "wallpapers", image: "images/wallpapers/wallpaper.jpg",    downloadable: true },
+    { id: 19, title: "Wallpaper 2",  category: "wallpapers", image: "images/wallpapers/wallpaper-0.jpg",  downloadable: true },
+    { id: 20, title: "Wallpaper 3",  category: "wallpapers", image: "images/wallpapers/wallpaper-1.jpg",  downloadable: true },
+    { id: 21, title: "Wallpaper 4",  category: "wallpapers", image: "images/wallpapers/wallpaper-2.jpg",  downloadable: true },
+    { id: 22, title: "Wallpaper 5",  category: "wallpapers", image: "images/wallpapers/wallpaper-3.jpg",  downloadable: true },
+    { id: 23, title: "Wallpaper 6",  category: "wallpapers", image: "images/wallpapers/wallpaper-4.jpg",  downloadable: true },
+    { id: 24, title: "Wallpaper 7",  category: "wallpapers", image: "images/wallpapers/wallpaper-5.jpg",  downloadable: true },
+    { id: 25, title: "Wallpaper 8",  category: "wallpapers", image: "images/wallpapers/wallpaper-6.jpg",  downloadable: true },
+    { id: 26, title: "Wallpaper 9",  category: "wallpapers", image: "images/wallpapers/wallpaper-7.jpg",  downloadable: true },
+    { id: 27, title: "Wallpaper 10", category: "wallpapers", image: "images/wallpapers/wallpaper-8.jpg",  downloadable: true },
+    { id: 28, title: "Wallpaper 11", category: "wallpapers", image: "images/wallpapers/wallpaper-9.jpg",  downloadable: true },
+    { id: 29, title: "Wallpaper 12", category: "wallpapers", image: "images/wallpapers/wallpaper-10.jpg", downloadable: true },
+    { id: 30, title: "Wallpaper 13", category: "wallpapers", image: "images/wallpapers/wallpaper-11.jpg", downloadable: true },
+    { id: 31, title: "Wallpaper 14", category: "wallpapers", image: "images/wallpapers/wallpaper-12.jpg", downloadable: true },
+    { id: 32, title: "Wallpaper 15", category: "wallpapers", image: "images/wallpapers/wallpaper-13.jpg", downloadable: true },
+    { id: 33, title: "Wallpaper 16", category: "wallpapers", image: "images/wallpapers/wallpaper-14.jpg", downloadable: true }
 ];
 
 /* -------------------------------------------------------------
    2. MOVIE COLLECTIONS DATA (used on movies.html)
    Each movie links to photos via matching "movieTag" — extend
    the photos array with a movieTag field as real images are added.
+
+   Budget/gross/verdict figures were cross-matched from two source
+   tables (a Year+Verdict list and a separate Budget/Gross/Verdict
+   list) by row order and year, then appended to each movie's
+   description as plain text.
    ------------------------------------------------------------- */
 const movies = [
+    { id: "mainepyarkiya", title: "Maine Pyar Kiya", year: "1989", sortYear: 1989, popular: true, cover: "images/movies/mainepyarkiya-1.jpg",
+        description: "Salman Khan's breakout lead role — a romantic drama that made him an overnight star and won him the Filmfare Award for Best Male Debut. Verdict: All Time Blockbuster (ATB)." },
+
+    { id: "haahk", title: "Hum Aapke Hain Koun..!", year: "1994", sortYear: 1994, popular: true, cover: "images/movies/haahk-1.jpg",
+        description: "A family drama centered on two families brought together by marriage — one of Bollywood's biggest hits of the 1990s. Verdict: All Time Blockbuster (ATB)." },
+
+    { id: "karanarjun", title: "Karan Arjun", year: "1995", sortYear: 1995, popular: true, cover: "images/movies/karanarjun-1.jpg",
+        description: "A reincarnation drama co-starring Shah Rukh Khan that helped revitalise Salman Khan's career in the mid-90s. Verdict: Blockbuster." },
+
+    { id: "partner", title: "Partner", year: "2007", sortYear: 2007, popular: true, cover: "images/movies/partner-1.jpg",
+        description: "A comedy about a matchmaker helping a shy man find love, co-starring Govinda. Verdict: Blockbuster." },
+
+    { id: "veer", title: "Veer", year: "2010", sortYear: 2010, popular: true, cover: "images/movies/veer-1.jpg",
+        description: "A period action-drama in which Salman Khan plays a Rajput warrior fighting against British colonial rule. Budget: ₹63 crore | Box office gross: ₹61 crore | Verdict: Below Average." },
+
+    { id: "dabangg1",  title: "Dabangg",             year: "2010",      sortYear: 2010, popular: true,  cover: "images/movies/dabangg-1.jpg",
+        description: "Salman Khan plays Chulbul Pandey, a fearless, corrupt-but-charming cop who locks horns with a crooked politician after a troubled relationship with his own family. Budget: ₹41 crore | Box office gross: ₹219 crore | Verdict: Blockbuster.",
+        ott: "Amazon Prime Video" },
+
+    { id: "ready", title: "Ready", year: "2011", sortYear: 2011, popular: true, cover: "images/movies/ready-1.jpg",
+        description: "A romantic comedy about a wedding-crashing scheme that leads to real romance. Budget: ₹30 crore | Box office gross: ₹183 crore | Verdict: Blockbuster." },
+
+    { id: "bodyguard", title: "Bodyguard", year: "2011", sortYear: 2011, popular: true, cover: "images/movies/bodyguard-1.jpg",
+        description: "An action-romance in which Salman Khan plays a bodyguard hired to protect a young woman, only to secretly fall for her. Budget: ₹60 crore | Box office gross: ₹252.9 crore | Verdict: Blockbuster." },
+
+    { id: "ektatiger", title: "Ek Tha Tiger",         year: "2012",      sortYear: 2012, popular: true, cover: "images/movies/ektha-tiger-1.jpg",
+        description: "A top Indian spy is sent to observe a scientist suspected of leaking data to Pakistan, but ends up falling for the scientist's mysterious caretaker instead. Budget: ₹75 crore | Box office gross: ₹335 crore | Verdict: Blockbuster.",
+        ott: "Netflix" },
+
+    { id: "dabangg2",  title: "Dabangg 2",           year: "2012",      sortYear: 2012, popular: true,  cover: "images/movies/dabangg2-1.jpg",
+        description: "Chulbul Pandey stirs fresh trouble when he kills the brother of a corrupt politician, who then sends henchmen after Chulbul's wife in retaliation. Budget: ₹50 crore | Box office gross: ₹255 crore | Verdict: Blockbuster.",
+        ott: "Amazon Video (Rent/Buy)" },
+
+    { id: "jaiho", title: "Jai Ho", year: "2014", sortYear: 2014, popular: true, cover: "images/movies/jaiho-1.jpg",
+        description: "An action film in which Salman Khan plays a former officer who champions a pay-it-forward philosophy. Budget: ₹102 crore | Box office gross: ₹195 crore | Verdict: Semi Hit." },
+
+    { id: "kick",      title: "Kick",                year: "2014",      sortYear: 2014, popular: true,  cover: "images/movies/kick-1.jpg",
+        description: "A thrill-seeking, adrenaline-chasing man leads a double life as a masked thief, staying one step ahead of the cop who's falling for him. Budget: ₹140 crore | Box office gross: ₹402 crore | Verdict: Blockbuster.",
+        ott: "Netflix" },
+
+    { id: "bajrangi",  title: "Bajrangi Bhaijaan",    year: "2015",      sortYear: 2015, popular: true,  cover: "images/movies/bajrangi-1.jpg",
+        description: "A devoted, big-hearted man undertakes a heartfelt journey across the border to reunite a lost, mute Pakistani girl with her family. Budget: ₹90 crore | Box office gross: ₹918.18 crore | Verdict: All Time Blockbuster.",
+        ott: "Netflix" },
+
+    { id: "premratan", title: "Prem Ratan Dhan Payo", year: "2015", sortYear: 2015, popular: true, cover: "images/movies/premratan-1.jpg",
+        description: "A royal family drama in which Salman Khan plays a dual role, released as a big Diwali tentpole. Budget: ₹90 crore | Box office gross: ₹432 crore | Verdict: Blockbuster." },
+
+    { id: "sultan",    title: "Sultan",              year: "2016",      sortYear: 2016, popular: true,  cover: "images/movies/sultan-1.jpg",
+        description: "An ageing wrestler chases one last shot at Olympic glory while trying to repair his personal life and marriage. Budget: ₹90 crore | Box office gross: ₹623.33 crore | Verdict: Blockbuster.",
+        ott: "Netflix" },
+
+    { id: "tubelight", title: "Tubelight", year: "2017", sortYear: 2017, popular: true, cover: "images/movies/tubelight-1.jpg",
+        description: "A drama set during the 1962 Indo-China war, following a man's unwavering faith that his brother will return. Budget: ₹100 crore | Box office gross: ₹211.14 crore | Verdict: Below Average." },
+
+    { id: "tigerzindahai", title: "Tiger Zinda Hai",  year: "2017",      sortYear: 2017, popular: true,  cover: "images/movies/tigerzindahai-1.jpg",
+        description: "RAW agent Tiger and ISI agent Zoya come out of hiding to rescue a group of Indian and Pakistani nurses held hostage by a terrorist organization. Budget: ₹130 crore | Box office gross: ₹565 crore | Verdict: Blockbuster.",
+        ott: "Netflix" },
+
+    { id: "race3", title: "Race 3", year: "2018", sortYear: 2018, popular: true, cover: "images/movies/race3-1.jpg",
+        description: "An action-thriller and the third installment in the Race franchise, featuring an ensemble cast. Budget: ₹180 crore | Box office gross: ₹303 crore | Verdict: Average." },
+
+    { id: "bharat", title: "Bharat", year: "2019", sortYear: 2019, popular: true, cover: "images/movies/bharat-1.jpg",
+        description: "An epic drama spanning decades of Indian history as seen through the life of one man. Budget: ₹100 crore | Box office gross: ₹325.58 crore | Verdict: Semi Hit." },
+
+    { id: "dabangg3",  title: "Dabangg 3",           year: "2019",      sortYear: 2019, popular: true,  cover: "images/movies/dabangg3-1.jpg",
+        description: "Chulbul Pandey's past comes back to haunt him when an old enemy, Balli Singh, returns and puts his family in danger. Budget: ₹178 crore | Box office gross: ₹217 crore | Verdict: Flop.",
+        ott: "Netflix" },
+
+    { id: "radhe", title: "Radhe", year: "2021", sortYear: 2021, popular: true, cover: "images/movies/radhe-1.jpg",
+        description: "An action film released direct-to-digital during the pandemic on a pay-per-view model. Budget: ₹90 crore | OTT earnings: ₹18.3 crore | Verdict: Super Successful on OTT." },
+
+    { id: "antim", title: "Antim: The Final Truth", year: "2021", sortYear: 2021, popular: true, cover: "images/movies/antim-1.jpg",
+        description: "A crime drama in which Salman Khan plays a cop pursuing a gangster, also marking Aayush Sharma's second lead role. Budget: ₹40 crore | Box office gross: ₹59 crore | Verdict: Flop." },
+
+    { id: "kkbkj", title: "Kisi Ka Bhai Kisi Ki Jaan", year: "2023", sortYear: 2023, popular: true, cover: "images/movies/kkbkj-1.jpg",
+        description: "An action-drama, released for Eid 2023, following a man's devotion to protecting his sisters. Budget: ₹125 crore | Box office gross: ₹182.44 crore | Verdict: Flop." },
+
     { id: "tiger3",     title: "Tiger 3",             year: "2023",      sortYear: 2023, popular: true,  cover: "images/movies/tiger3-1.jpg",
         description: "RAW agent Avinash \"Tiger\" Singh Rathore is forced to choose between his country and his family when an old enemy returns and threatens them both.",
         ott: "Amazon Prime Video" },
-    { id: "dabangg3",  title: "Dabangg 3",           year: "2019",      sortYear: 2019, popular: true,  cover: "images/movies/dabangg3-1.jpg",
-        description: "Chulbul Pandey's past comes back to haunt him when an old enemy, Balli Singh, returns and puts his family in danger.",
-        ott: "Netflix" },
-    { id: "tigerzindahai", title: "Tiger Zinda Hai",  year: "2017",      sortYear: 2017, popular: true,  cover: "images/movies/tigerzindahai-1.jpg",
-        description: "RAW agent Tiger and ISI agent Zoya come out of hiding to rescue a group of Indian and Pakistani nurses held hostage by a terrorist organization.",
-        ott: "Netflix" },
-    { id: "sultan",    title: "Sultan",              year: "2016",      sortYear: 2016, popular: true,  cover: "images/movies/sultan-1.jpg",
-        description: "An ageing wrestler chases one last shot at Olympic glory while trying to repair his personal life and marriage.",
-        ott: "Netflix" },
-    { id: "bajrangi",  title: "Bajrangi Bhaijaan",    year: "2015",      sortYear: 2015, popular: true,  cover: "images/movies/bajrangi-1.jpg",
-        description: "A devoted, big-hearted man undertakes a heartfelt journey across the border to reunite a lost, mute Pakistani girl with her family.",
-        ott: "Netflix" },
-    { id: "kick",      title: "Kick",                year: "2014",      sortYear: 2014, popular: true,  cover: "images/movies/kick-1.jpg",
-        description: "A thrill-seeking, adrenaline-chasing man leads a double life as a masked thief, staying one step ahead of the cop who's falling for him.",
-        ott: "Netflix" },
-    { id: "dabangg2",  title: "Dabangg 2",           year: "2012",      sortYear: 2012, popular: true,  cover: "images/movies/dabangg2-1.jpg",
-        description: "Chulbul Pandey stirs fresh trouble when he kills the brother of a corrupt politician, who then sends henchmen after Chulbul's wife in retaliation.",
-        ott: "Amazon Video (Rent/Buy)" },
-    { id: "ektatiger", title: "Ek Tha Tiger",         year: "2012",      sortYear: 2012, popular: true,  cover: "images/movies/ektha-tiger-1.jpg",
-        description: "A top Indian spy is sent to observe a scientist suspected of leaking data to Pakistan, but ends up falling for the scientist's mysterious caretaker instead.",
-        ott: "Netflix" },
-    { id: "dabangg1",  title: "Dabangg",             year: "2010",      sortYear: 2010, popular: true,  cover: "images/movies/dabangg-1.jpg",
-        description: "Salman Khan plays Chulbul Pandey, a fearless, corrupt-but-charming cop who locks horns with a crooked politician after a troubled relationship with his own family.",
-        ott: "Amazon Prime Video" },
+
     { id: "wanted",    title: "Wanted",              year: "2009",      sortYear: 2009, popular: false, cover: "images/movies/wanted-1.jpg",
         description: "A small-time crook gets entangled with a mysterious, dangerous man who turns out to be far more than he appears.",
         ott: "Amazon Prime Video" }
@@ -709,33 +781,95 @@ function renderWallpapers() {
    Top grid = movie posters (from the `movies` array), each linking
    to movie-detail.html?id=<movieId> for the full description + OTT.
    ------------------------------------------------------------- */
-function renderMoviesPage() {
+function renderMoviesPage(sortOrder) {
     const movieGrid = document.querySelector("[data-movie-grid]");
     if (!movieGrid) return;
 
-    // Only popular titles, newest first.
+    const order = sortOrder || "oldest";
+
     const popularMovies = movies
         .filter(m => m.popular)
-        .sort((a, b) => b.sortYear - a.sortYear);
+        .sort((a, b) => order === "newest" ? b.sortYear - a.sortYear : a.sortYear - b.sortYear);
 
-    movieGrid.innerHTML = popularMovies.map(m => `
-      <a href="movie-detail.html?id=${m.id}" class="movie-card">
-        <span class="movie-poster">
-          <img src="${m.cover}" alt="${m.title}" loading="lazy"
-               onerror="this.src='https://placehold.co/400x500/1c1a20/c9a227?text=${encodeURIComponent(m.title)}'">
-        </span>
-        <span class="movie-meta">
-          <span class="movie-name">${m.title}</span>
-          <span class="movie-year">${m.year}</span>
-        </span>
-      </a>
+    // Group movies sharing a year under one heading (e.g. 2010: Veer, Dabangg)
+    // instead of one flat grid.
+    const groups = [];
+    popularMovies.forEach(m => {
+        const lastGroup = groups[groups.length - 1];
+        if (lastGroup && lastGroup.year === m.year) {
+            lastGroup.items.push(m);
+        } else {
+            groups.push({ year: m.year, items: [m] });
+        }
+    });
+
+    movieGrid.innerHTML = groups.map(group => `
+      <div class="movie-year-group">
+        <h3 class="movie-year-heading">${group.year}</h3>
+        <div class="movie-year-row">
+          ${group.items.map(m => `
+            <a href="movie-detail.html?id=${m.id}" class="movie-card">
+              <span class="movie-poster">
+                <img src="${m.cover}" alt="${m.title}" loading="lazy"
+                     onerror="this.src='https://placehold.co/400x500/1c1a20/c9a227?text=${encodeURIComponent(m.title)}'">
+              </span>
+              <span class="movie-meta">
+                <span class="movie-name">${m.title}</span>
+                <span class="movie-year">${m.year}</span>
+              </span>
+            </a>
+          `).join("")}
+        </div>
+      </div>
     `).join("");
+}
+
+/* -------------------------------------------------------------
+   5c-ii. MOVIES SORT DROPDOWN (used on movies.html)
+   A single themed "Sort" button top-right -- click opens a small menu
+   with the two order options, click one to apply and close.
+   ------------------------------------------------------------- */
+function initMovieSort() {
+    const dropdown = document.getElementById("sortDropdown");
+    const toggle = document.getElementById("sortToggle");
+    const menu = document.getElementById("sortMenu");
+    if (!dropdown || !toggle || !menu) return;
+
+    const closeMenu = () => {
+        menu.style.display = "none";
+        toggle.setAttribute("aria-expanded", "false");
+    };
+    const openMenu = () => {
+        menu.style.display = "block";
+        toggle.setAttribute("aria-expanded", "true");
+    };
+
+    toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (menu.style.display === "none") openMenu(); else closeMenu();
+    });
+
+    menu.querySelectorAll(".sort-option").forEach(btn => {
+        btn.addEventListener("click", () => {
+            menu.querySelectorAll(".sort-option").forEach(o => o.classList.toggle("active", o === btn));
+            closeMenu();
+            renderMoviesPage(btn.dataset.value);
+        });
+    });
+
+    // Close when clicking anywhere outside, or on Escape
+    document.addEventListener("click", (e) => {
+        if (!dropdown.contains(e.target)) closeMenu();
+    });
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeMenu();
+    });
 }
 
 /* -------------------------------------------------------------
    5d. MOVIE DETAIL PAGE RENDERER (used on movie-detail.html)
    Reads ?id=<movieId> from the URL and renders that movie's
-   poster, description, and OTT badge.
+   poster, description, and OTT badge (OTT badge only if known).
    ------------------------------------------------------------- */
 function renderMovieDetailPage() {
     const detailPanel = document.querySelector("[data-movie-detail]");
@@ -758,7 +892,7 @@ function renderMovieDetailPage() {
         <div class="movie-detail-body">
           <h3>${m.title} <span class="movie-detail-year">${m.year}</span></h3>
           <p class="movie-detail-desc">${m.description}</p>
-          <span class="ott-badge">▶ Streaming on ${m.ott}</span>
+          ${m.ott ? `<span class="ott-badge">▶ Streaming on ${m.ott}</span>` : ""}
         </div>
       </div>
     `;
@@ -781,6 +915,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderWallpapers();
     renderMoviesPage();
     renderMovieDetailPage();
+    initMovieSort();
     initScrollReveal();
 
     // Set active nav link based on current page
