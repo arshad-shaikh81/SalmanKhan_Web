@@ -46,7 +46,34 @@ const photos = [
     { id: 30, title: "Wallpaper 13", category: "wallpapers", image: "images/wallpapers/wallpaper-11.jpg", downloadable: true },
     { id: 31, title: "Wallpaper 14", category: "wallpapers", image: "images/wallpapers/wallpaper-12.jpg", downloadable: true },
     { id: 32, title: "Wallpaper 15", category: "wallpapers", image: "images/wallpapers/wallpaper-13.jpg", downloadable: true },
-    { id: 33, title: "Wallpaper 16", category: "wallpapers", image: "images/wallpapers/wallpaper-14.jpg", downloadable: true }
+    { id: 33, title: "Wallpaper 16", category: "wallpapers", image: "images/wallpapers/wallpaper-14.jpg", downloadable: true },
+    { id: 34, title: "Wallpaper 17", category: "wallpapers", image: "images/wallpapers/wallpaper-15.jpg", downloadable: true },
+    { id: 35, title: "Wallpaper 18", category: "wallpapers", image: "images/wallpapers/wallpaper-16.jpg", downloadable: true },
+    { id: 36, title: "Wallpaper 19", category: "wallpapers", image: "images/wallpapers/wallpaper-17.jpg", downloadable: true },
+    { id: 37, title: "Wallpaper 20", category: "wallpapers", image: "images/wallpapers/wallpaper-18.jpg", downloadable: true },
+    { id: 38, title: "Wallpaper 21", category: "wallpapers", image: "images/wallpapers/wallpaper-19.jpg", downloadable: true },
+    { id: 39, title: "Wallpaper 22", category: "wallpapers", image: "images/wallpapers/wallpaper-20.jpg", downloadable: true },
+
+    { id: 40, title: "Wallpaper 23", category: "wallpapers", image: "images/wallpapers/wallpaper-21.jpg", downloadable: true },
+    { id: 41, title: "Wallpaper 24", category: "wallpapers", image: "images/wallpapers/wallpaper-22.jpg", downloadable: true },
+    { id: 42, title: "Wallpaper 25", category: "wallpapers", image: "images/wallpapers/wallpaper-23.jpg", downloadable: true },
+    { id: 43, title: "Wallpaper 26", category: "wallpapers", image: "images/wallpapers/wallpaper-24.jpg", downloadable: true },
+    { id: 44, title: "Wallpaper 27", category: "wallpapers", image: "images/wallpapers/wallpaper-25.jpg", downloadable: true },
+    { id: 45, title: "Wallpaper 28", category: "wallpapers", image: "images/wallpapers/wallpaper-26.jpg", downloadable: true },
+    { id: 46, title: "Wallpaper 29", category: "wallpapers", image: "images/wallpapers/wallpaper-27.jpg", downloadable: true },
+    { id: 47, title: "Wallpaper 30", category: "wallpapers", image: "images/wallpapers/wallpaper-28.jpg", downloadable: true },
+    { id: 48, title: "Wallpaper 31", category: "wallpapers", image: "images/wallpapers/wallpaper-29.jpg", downloadable: true },
+    { id: 49, title: "Wallpaper 32", category: "wallpapers", image: "images/wallpapers/wallpaper-30.jpg", downloadable: true },
+    { id: 50, title: "Wallpaper 33", category: "wallpapers", image: "images/wallpapers/wallpaper-31.jpg", downloadable: true },
+    { id: 51, title: "Wallpaper 34", category: "wallpapers", image: "images/wallpapers/wallpaper-32.jpg", downloadable: true },
+    { id: 52, title: "Wallpaper 35", category: "wallpapers", image: "images/wallpapers/wallpaper-33.jpg", downloadable: true },
+    { id: 53, title: "Wallpaper 36", category: "wallpapers", image: "images/wallpapers/wallpaper-34.jpg", downloadable: true },
+    { id: 54, title: "Wallpaper 37", category: "wallpapers", image: "images/wallpapers/wallpaper-35.jpg", downloadable: true },
+    { id: 55, title: "Wallpaper 38", category: "wallpapers", image: "images/wallpapers/wallpaper-36.jpg", downloadable: true },
+
+
+
+
 ];
 
 /* -------------------------------------------------------------
