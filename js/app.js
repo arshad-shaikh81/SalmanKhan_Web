@@ -172,12 +172,10 @@ const dialogues = [
    rows simply won't play anything (missing files fail silently).
    ------------------------------------------------------------- */
 const bgmTracks = [
-    { title: "Theme",              movie: "Site Theme",         src: "assets/audio/theme.mp3" },
-    { title: "Selfie Le Le Re",    movie: "Bajrangi Bhaijaan",  src: "assets/audio/bgm/selfie-le-le-re.mp3" },
-    { title: "Swag Se Swagat",     movie: "Tiger Zinda Hai",    src: "assets/audio/bgm/swag-se-swagat.mp3" },
-    { title: "Jumme Ki Raat",      movie: "Kick",               src: "assets/audio/bgm/jumme-ki-raat.mp3" },
-    { title: "Character Dheela",   movie: "Ready",              src: "assets/audio/bgm/character-dheela.mp3" },
-    { title: "Dabangg Title Track", movie: "Dabangg",           src: "assets/audio/bgm/dabangg-title-track.mp3" }
+    { title: "Theme",         movie: "Site Theme",   src: "assets/audio/theme.mp3" },
+    { title: "Ek Tha Tiger",  movie: "Ek Tha Tiger",  src: "assets/audio/ekthatiger.mp3" },
+    { title: "Radhe",         movie: "Radhe",         src: "assets/audio/radhe.mp3" },
+    { title: "Sikandar",      movie: "Sikandar",      src: "assets/audio/sikandar.mp3" }
 ];
 
 /* -------------------------------------------------------------
@@ -578,6 +576,67 @@ function initBgmList() {
 }
 
 /* -------------------------------------------------------------
+   3e-iii. STANDALONE BGM PAGE (bgm.html)
+   Renders every track from bgmTracks as a simple list row (same
+   look as the old modal) into #bgmPageList. Shares the single
+   <audio id="bgMusic"> element with the floating music-toggle
+   button, so play state always stays in sync between the two.
+   Only runs on pages that actually have #bgmPageList (i.e. bgm.html).
+   ------------------------------------------------------------- */
+function initBgmPage() {
+    const list = document.getElementById("bgmPageList");
+    const audio = document.getElementById("bgMusic");
+    if (!list || !audio || !bgmTracks.length) return;
+
+    list.innerHTML = bgmTracks.map(t => `
+        <div class="bgm-list-item">
+            <div class="bgm-track-info">
+                <span class="bgm-track-title">${t.title}</span>
+                <span class="bgm-track-movie">${t.movie}</span>
+            </div>
+            <button type="button" class="bgm-play-btn" data-bgm-src="${t.src}" aria-label="Play ${t.title}">
+                <svg class="icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="icon-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+            </button>
+        </div>
+    `).join("");
+
+    const playButtons = list.querySelectorAll(".bgm-play-btn");
+
+    const syncButtons = () => {
+        playButtons.forEach(btn => {
+            const isThis = !audio.paused && !!audio.currentSrc && audio.currentSrc.endsWith(btn.dataset.bgmSrc);
+            btn.classList.toggle("is-playing", isThis);
+            btn.querySelector(".icon-play").hidden = isThis;
+            btn.querySelector(".icon-pause").hidden = !isThis;
+        });
+    };
+
+    playButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const src = btn.dataset.bgmSrc;
+            const isThisPlaying = !audio.paused && !!audio.currentSrc && audio.currentSrc.endsWith(src);
+
+            if (isThisPlaying) {
+                audio.pause();
+                return;
+            }
+
+            if (!audio.currentSrc || !audio.currentSrc.endsWith(src)) {
+                audio.src = src;
+            }
+            audio.play().catch(() => {});
+        });
+    });
+
+    audio.addEventListener("play", syncButtons);
+    audio.addEventListener("pause", syncButtons);
+    audio.addEventListener("ended", syncButtons);
+
+    syncButtons();
+}
+
+/* -------------------------------------------------------------
    3f. DIALOGUE IMAGE PARALLAX
    As the dialogue card scrolls through the viewport, the photo inside
    it drifts vertically a little slower/faster than the page itself --
@@ -809,17 +868,23 @@ function renderCategories() {
     const categoryMeta = [
         { key: "movies",    label: "Movies",     desc: "On-screen moments" },
         { key: "events",    label: "Events",     desc: "Public appearances" },
-        { key: "portraits", label: "Portraits",  desc: "Studio & candid" },
+        { key: "bgm",       label: "Popular BGM", desc: "Iconic scores & tracks", image: "images/movies/kick-1.jpg" },
         { key: "old-photos", label: "Old Photos", desc: "Throwback archive" },
         { key: "wallpapers", label: "Wallpapers", desc: "HD downloads" }
     ];
 
-    // Wallpapers has its own dedicated page (wallpapers.html); the rest
-    // still point at gallery.html?category=... until that page exists.
-    const linkFor = (key) => key === "wallpapers" ? "wallpapers.html" : `gallery.html?category=${key}`;
+    // Movies, Wallpapers, and Popular BGM each have their own dedicated
+    // page; the rest still point at gallery.html?category=... until
+    // that page exists.
+    const linkFor = (key) => {
+        if (key === "movies") return "movies.html";
+        if (key === "wallpapers") return "wallpapers.html";
+        if (key === "bgm") return "bgm.html";
+        return `gallery.html?category=${key}`;
+    };
 
     grid.innerHTML = categoryMeta.map(cat => {
-        const sample = photos.find(p => p.category === cat.key);
+        const sample = cat.image ? { image: cat.image } : photos.find(p => p.category === cat.key);
         return `
       <a href="${linkFor(cat.key)}" class="category-card fade-up">
         <img src="${sample ? sample.image : ''}" alt="${cat.label} category cover" loading="lazy"
@@ -1008,6 +1073,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initMusic();
     initDialogues();
     initBgmList();
+    initBgmPage();
     initDialogueParallax();
     initStatCounters();
     initTimelineProgress();
