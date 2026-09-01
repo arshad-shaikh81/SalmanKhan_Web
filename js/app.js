@@ -10,13 +10,13 @@
    featured: true shows it in the homepage "Featured Photos" filmstrip
    ------------------------------------------------------------- */
 const photos = [
-    { id: 1,  title: "Ek Tha Tiger Poster Still",       category: "movies",    image: "images/movies/tiger-1.jpg",       featured: true },
-    { id: 2,  title: "Dabangg — Chulbul Pandey",      category: "movies",    image: "images/movies/dabangg-1.jpg",       featured: true },
-    { id: 3,  title: "Bajrangi Bhaijaan Still",       category: "movies",    image: "images/movies/bajrangi-1.jpg",      featured: true },
-    { id: 4,  title: "Sultan — Wrestling Ring",       category: "movies",    image: "images/movies/sultan-1.jpg",        featured: false },
-    { id: 5,  title: "Kick — Devil Look",             category: "movies",    image: "images/movies/kick-1.jpg",          featured: false },
-    { id: 6,  title: "Ek Tha Tiger Poster Still",     category: "movies",    image: "images/movies/ektha-tiger-1.jpg",   featured: false },
-    { id: 7,  title: "Wanted — First Look",           category: "movies",    image: "images/movies/wanted-1.jpg",        featured: false },
+    { id: 1,  title: "Ek Tha Tiger Poster Still",       category: "movies",    image: "images/movies/tiger-1.jpg",       featured: true,  movieTag: "ektatiger" },
+    { id: 2,  title: "Dabangg — Chulbul Pandey",      category: "movies",    image: "images/movies/dabangg-1.jpg",       featured: true,  movieTag: "dabangg1" },
+    { id: 3,  title: "Bajrangi Bhaijaan Still",       category: "movies",    image: "images/movies/bajrangi-1.jpg",      featured: true,  movieTag: "bajrangi" },
+    { id: 4,  title: "Sultan — Wrestling Ring",       category: "movies",    image: "images/movies/sultan-1.jpg",        featured: false, movieTag: "sultan" },
+    { id: 5,  title: "Kick — Devil Look",             category: "movies",    image: "images/movies/kick-1.jpg",          featured: false, movieTag: "kick" },
+    { id: 6,  title: "Ek Tha Tiger Poster Still",     category: "movies",    image: "images/movies/ektha-tiger-1.jpg",   featured: false, movieTag: "ektatiger" },
+    { id: 7,  title: "Wanted — First Look",           category: "movies",    image: "images/movies/wanted-1.jpg",        featured: false, movieTag: "wanted" },
 
     { id: 8,  title: "Being Human Charity Gala",      category: "events",    image: "images/events/being-human-1.jpg",   featured: true },
     { id: 9,  title: "Bigg Boss Season Launch",       category: "events",    image: "images/events/bigg-boss-1.jpg",     featured: false },
@@ -32,20 +32,8 @@ const photos = [
     { id: 17, title: "Debut Years Throwback",         category: "old-photos", image: "images/old-photos/old-3.jpg",      featured: false },
 
     { id: 18, title: "Golden Hour Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-1.jpg", downloadable: true },
-    { id: 19, title: "Cinematic Poster Wallpaper",    category: "wallpapers", image: "images/wallpapers/wallpaper.jpg", downloadable: true },
-    { id: 20, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-2.jpg", downloadable: true },
-    { id: 21, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-3.jpg", downloadable: true },
-    { id: 22, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-0.jpg", downloadable: true },
-    { id: 23, title: "Wallpaper-4",         category: "wallpapers", image: "images/wallpapers/wallpaper-4.jpg", downloadable: true },
-    { id: 24, title: "Wallpaper-5",         category: "wallpapers", image: "images/wallpapers/wallpaper-5.jpg", downloadable: true },
-    { id: 25, title: "Wallpaper-6",         category: "wallpapers", image: "images/wallpapers/wallpaper-6.jpg", downloadable: true },
-    { id: 26, title: "Wallpaper-7",         category: "wallpapers", image: "images/wallpapers/wallpaper-7.jpg", downloadable: true },
-    { id: 27, title: "Wallpaper-8",         category: "wallpapers", image: "images/wallpapers/wallpaper-8.jpg", downloadable: true },
-    { id: 28, title: "Wallpaper-9",         category: "wallpapers", image: "images/wallpapers/wallpaper-9.jpg", downloadable: true },
-    { id: 29, title: "Wallpaper-10",         category: "wallpapers", image: "images/wallpapers/wallpaper-10.jpg", downloadable: true },
-    { id: 30, title: "Wallpaper-11",         category: "wallpapers", image: "images/wallpapers/wallpaper-11.jpg", downloadable: true },
-
-
+    { id: 19, title: "Cinematic Poster Wallpaper",    category: "wallpapers", image: "images/wallpapers/wallpaper-2.jpg", downloadable: true },
+    { id: 20, title: "HD Portrait Wallpaper",         category: "wallpapers", image: "images/wallpapers/wallpaper-3.jpg", downloadable: true }
 ];
 
 /* -------------------------------------------------------------
@@ -54,13 +42,36 @@ const photos = [
    the photos array with a movieTag field as real images are added.
    ------------------------------------------------------------- */
 const movies = [
-    { id: "tiger",     title: "Tiger Series",        year: "2012–2023", cover: "images/movies/tiger3-1.jpg" },
-    { id: "dabangg",   title: "Dabangg",             year: "2010–2019", cover: "images/movies/dabangg-1.jpg" },
-    { id: "bajrangi",  title: "Bajrangi Bhaijaan",    year: "2015",      cover: "images/movies/bajrangi-1.jpg" },
-    { id: "sultan",    title: "Sultan",              year: "2016",      cover: "images/movies/sultan-1.jpg" },
-    { id: "kick",      title: "Kick",                year: "2014",      cover: "images/movies/kick-1.jpg" },
-    { id: "ektatiger", title: "Ek Tha Tiger",         year: "2012",      cover: "images/movies/ektha-tiger-1.jpg" },
-    { id: "wanted",    title: "Wanted",              year: "2009",      cover: "images/movies/wanted-1.jpg" }
+    { id: "tiger3",     title: "Tiger 3",             year: "2023",      sortYear: 2023, popular: true,  cover: "images/movies/tiger3-1.jpg",
+        description: "RAW agent Avinash \"Tiger\" Singh Rathore is forced to choose between his country and his family when an old enemy returns and threatens them both.",
+        ott: "Amazon Prime Video" },
+    { id: "dabangg3",  title: "Dabangg 3",           year: "2019",      sortYear: 2019, popular: true,  cover: "images/movies/dabangg3-1.jpg",
+        description: "Chulbul Pandey's past comes back to haunt him when an old enemy, Balli Singh, returns and puts his family in danger.",
+        ott: "Netflix" },
+    { id: "tigerzindahai", title: "Tiger Zinda Hai",  year: "2017",      sortYear: 2017, popular: true,  cover: "images/movies/tigerzindahai-1.jpg",
+        description: "RAW agent Tiger and ISI agent Zoya come out of hiding to rescue a group of Indian and Pakistani nurses held hostage by a terrorist organization.",
+        ott: "Netflix" },
+    { id: "sultan",    title: "Sultan",              year: "2016",      sortYear: 2016, popular: true,  cover: "images/movies/sultan-1.jpg",
+        description: "An ageing wrestler chases one last shot at Olympic glory while trying to repair his personal life and marriage.",
+        ott: "Netflix" },
+    { id: "bajrangi",  title: "Bajrangi Bhaijaan",    year: "2015",      sortYear: 2015, popular: true,  cover: "images/movies/bajrangi-1.jpg",
+        description: "A devoted, big-hearted man undertakes a heartfelt journey across the border to reunite a lost, mute Pakistani girl with her family.",
+        ott: "Netflix" },
+    { id: "kick",      title: "Kick",                year: "2014",      sortYear: 2014, popular: true,  cover: "images/movies/kick-1.jpg",
+        description: "A thrill-seeking, adrenaline-chasing man leads a double life as a masked thief, staying one step ahead of the cop who's falling for him.",
+        ott: "Netflix" },
+    { id: "dabangg2",  title: "Dabangg 2",           year: "2012",      sortYear: 2012, popular: true,  cover: "images/movies/dabangg2-1.jpg",
+        description: "Chulbul Pandey stirs fresh trouble when he kills the brother of a corrupt politician, who then sends henchmen after Chulbul's wife in retaliation.",
+        ott: "Amazon Video (Rent/Buy)" },
+    { id: "ektatiger", title: "Ek Tha Tiger",         year: "2012",      sortYear: 2012, popular: true,  cover: "images/movies/ektha-tiger-1.jpg",
+        description: "A top Indian spy is sent to observe a scientist suspected of leaking data to Pakistan, but ends up falling for the scientist's mysterious caretaker instead.",
+        ott: "Netflix" },
+    { id: "dabangg1",  title: "Dabangg",             year: "2010",      sortYear: 2010, popular: true,  cover: "images/movies/dabangg-1.jpg",
+        description: "Salman Khan plays Chulbul Pandey, a fearless, corrupt-but-charming cop who locks horns with a crooked politician after a troubled relationship with his own family.",
+        ott: "Amazon Prime Video" },
+    { id: "wanted",    title: "Wanted",              year: "2009",      sortYear: 2009, popular: false, cover: "images/movies/wanted-1.jpg",
+        description: "A small-time crook gets entangled with a mysterious, dangerous man who turns out to be far more than he appears.",
+        ott: "Amazon Prime Video" }
 ];
 
 /* -------------------------------------------------------------
@@ -694,6 +705,66 @@ function renderWallpapers() {
 }
 
 /* -------------------------------------------------------------
+   5c. MOVIES PAGE RENDERER (used on movies.html)
+   Top grid = movie posters (from the `movies` array), each linking
+   to movie-detail.html?id=<movieId> for the full description + OTT.
+   ------------------------------------------------------------- */
+function renderMoviesPage() {
+    const movieGrid = document.querySelector("[data-movie-grid]");
+    if (!movieGrid) return;
+
+    // Only popular titles, newest first.
+    const popularMovies = movies
+        .filter(m => m.popular)
+        .sort((a, b) => b.sortYear - a.sortYear);
+
+    movieGrid.innerHTML = popularMovies.map(m => `
+      <a href="movie-detail.html?id=${m.id}" class="movie-card">
+        <span class="movie-poster">
+          <img src="${m.cover}" alt="${m.title}" loading="lazy"
+               onerror="this.src='https://placehold.co/400x500/1c1a20/c9a227?text=${encodeURIComponent(m.title)}'">
+        </span>
+        <span class="movie-meta">
+          <span class="movie-name">${m.title}</span>
+          <span class="movie-year">${m.year}</span>
+        </span>
+      </a>
+    `).join("");
+}
+
+/* -------------------------------------------------------------
+   5d. MOVIE DETAIL PAGE RENDERER (used on movie-detail.html)
+   Reads ?id=<movieId> from the URL and renders that movie's
+   poster, description, and OTT badge.
+   ------------------------------------------------------------- */
+function renderMovieDetailPage() {
+    const detailPanel = document.querySelector("[data-movie-detail]");
+    if (!detailPanel) return;
+
+    const id = new URLSearchParams(window.location.search).get("id");
+    const m = movies.find(mv => mv.id === id) || movies.find(mv => mv.popular);
+
+    if (!m) {
+        detailPanel.innerHTML = `<p class="empty-state">Movie not found.</p>`;
+        return;
+    }
+
+    document.title = `${m.title} | Salman Khan Photo Gallery`;
+
+    detailPanel.innerHTML = `
+      <div class="movie-detail-card in-view">
+        <img src="${m.cover}" alt="${m.title}" class="movie-detail-poster"
+             onerror="this.src='https://placehold.co/400x500/1c1a20/c9a227?text=${encodeURIComponent(m.title)}'">
+        <div class="movie-detail-body">
+          <h3>${m.title} <span class="movie-detail-year">${m.year}</span></h3>
+          <p class="movie-detail-desc">${m.description}</p>
+          <span class="ott-badge">▶ Streaming on ${m.ott}</span>
+        </div>
+      </div>
+    `;
+}
+
+/* -------------------------------------------------------------
    6. INIT — runs on every page
    ------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -708,6 +779,8 @@ document.addEventListener("DOMContentLoaded", () => {
     renderFilmstrip();
     renderCategories();
     renderWallpapers();
+    renderMoviesPage();
+    renderMovieDetailPage();
     initScrollReveal();
 
     // Set active nav link based on current page
