@@ -506,6 +506,64 @@ button:focus-visible,
     text-transform: uppercase;
 }
 
+/* -------------------- Popular BGM Modal -------------------- */
+/* Reuses .dialogue-modal / .dialogue-modal-content / .dialogue-modal-close
+   for the overlay + panel chrome; only the list rows themselves are new. */
+.bgm-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+.bgm-list-item:last-child { border-bottom: none; }
+
+.bgm-track-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.bgm-track-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.bgm-track-movie {
+    font-size: var(--fs-small);
+    color: var(--color-gold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.bgm-play-btn {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-gold-soft);
+    color: var(--color-gold-light);
+    transition: background var(--transition-fast), transform var(--transition-fast), color var(--transition-fast);
+}
+
+.bgm-play-btn:hover {
+    transform: scale(1.06);
+    background: var(--color-gold);
+    color: #1a1508;
+}
+
+.bgm-play-btn.is-playing {
+    background: var(--color-gold);
+    color: #1a1508;
+    animation: music-pulse 2.4s ease-in-out infinite;
+}
+
 /* -------------------- Filmstrip (signature element) -------------------- */
 .filmstrip-section {
     padding: var(--space-lg) 0;

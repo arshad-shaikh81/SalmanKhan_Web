@@ -162,6 +162,25 @@ const dialogues = [
 ];
 
 /* -------------------------------------------------------------
+   2c. POPULAR BGM DATA (used by the "Popular BGM" nav trigger)
+   Reuses the single existing <audio id="bgMusic"> element on every page
+   -- picking a track here just swaps its src and plays it, same element
+   the floating music-toggle button already controls.
+   NOTE: only "assets/audio/theme.mp3" exists on disk right now. Add real
+   mp3 files at the other paths below (or rename them to match) and each
+   row will start playing automatically -- until then, clicking those
+   rows simply won't play anything (missing files fail silently).
+   ------------------------------------------------------------- */
+const bgmTracks = [
+    { title: "Theme",              movie: "Site Theme",         src: "assets/audio/theme.mp3" },
+    { title: "Selfie Le Le Re",    movie: "Bajrangi Bhaijaan",  src: "assets/audio/bgm/selfie-le-le-re.mp3" },
+    { title: "Swag Se Swagat",     movie: "Tiger Zinda Hai",    src: "assets/audio/bgm/swag-se-swagat.mp3" },
+    { title: "Jumme Ki Raat",      movie: "Kick",               src: "assets/audio/bgm/jumme-ki-raat.mp3" },
+    { title: "Character Dheela",   movie: "Ready",              src: "assets/audio/bgm/character-dheela.mp3" },
+    { title: "Dabangg Title Track", movie: "Dabangg",           src: "assets/audio/bgm/dabangg-title-track.mp3" }
+];
+
+/* -------------------------------------------------------------
    3. NAVBAR: scroll shrink + mobile toggle
    ------------------------------------------------------------- */
 function initNavbar() {
@@ -458,6 +477,99 @@ function initDialogues() {
             openModal();
         }
     });
+    backdrop.addEventListener("click", closeModal);
+    closeBtn.addEventListener("click", closeModal);
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modal.hidden) closeModal();
+    });
+}
+
+/* -------------------------------------------------------------
+   3e-ii. POPULAR BGM MODAL
+   Opened from any "Popular BGM" trigger (navbar link, mobile menu item,
+   or the hero CTA on the homepage -- all share the .bgm-trigger class).
+   Reuses the page's single <audio id="bgMusic"> element: picking a row
+   swaps its src and plays it; clicking the currently-playing row's
+   button again pauses it. The floating music-toggle button (initMusic)
+   and this modal both just listen to the audio element's own play/
+   pause/ended events, so their UI always stays in sync automatically.
+   ------------------------------------------------------------- */
+function initBgmList() {
+    const triggers = document.querySelectorAll(".bgm-trigger");
+    const modal = document.getElementById("bgmModal");
+    const backdrop = document.getElementById("bgmModalBackdrop");
+    const closeBtn = document.getElementById("bgmModalClose");
+    const list = document.getElementById("bgmList");
+    const audio = document.getElementById("bgMusic");
+
+    if (!triggers.length || !modal || !list || !audio || !bgmTracks.length) return;
+
+    list.innerHTML = bgmTracks.map(t => `
+        <div class="bgm-list-item">
+            <div class="bgm-track-info">
+                <span class="bgm-track-title">${t.title}</span>
+                <span class="bgm-track-movie">${t.movie}</span>
+            </div>
+            <button type="button" class="bgm-play-btn" data-bgm-src="${t.src}" aria-label="Play ${t.title}">
+                <svg class="icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="icon-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+            </button>
+        </div>
+    `).join("");
+
+    const playButtons = list.querySelectorAll(".bgm-play-btn");
+
+    // Reflects which row (if any) matches the audio element's current
+    // playing track -- called on open and whenever the audio element
+    // itself fires play/pause/ended, so it stays correct even if the
+    // floating music-toggle button is the one that paused it.
+    const syncButtons = () => {
+        playButtons.forEach(btn => {
+            const isThis = !audio.paused && !!audio.currentSrc && audio.currentSrc.endsWith(btn.dataset.bgmSrc);
+            btn.classList.toggle("is-playing", isThis);
+            btn.querySelector(".icon-play").hidden = isThis;
+            btn.querySelector(".icon-pause").hidden = !isThis;
+        });
+    };
+
+    playButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const src = btn.dataset.bgmSrc;
+            const isThisPlaying = !audio.paused && !!audio.currentSrc && audio.currentSrc.endsWith(src);
+
+            if (isThisPlaying) {
+                audio.pause();
+                return;
+            }
+
+            if (!audio.currentSrc || !audio.currentSrc.endsWith(src)) {
+                audio.src = src;
+            }
+            audio.play().catch(() => {});
+        });
+    });
+
+    audio.addEventListener("play", syncButtons);
+    audio.addEventListener("pause", syncButtons);
+    audio.addEventListener("ended", syncButtons);
+
+    const openModal = () => {
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+        syncButtons();
+    };
+    const closeModal = () => {
+        modal.hidden = true;
+        document.body.style.overflow = "";
+    };
+
+    triggers.forEach(trigger => {
+        trigger.addEventListener("click", (e) => {
+            e.preventDefault();
+            openModal();
+        });
+    });
+
     backdrop.addEventListener("click", closeModal);
     closeBtn.addEventListener("click", closeModal);
     document.addEventListener("keydown", (e) => {
@@ -895,6 +1007,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initHeroEntry();
     initMusic();
     initDialogues();
+    initBgmList();
     initDialogueParallax();
     initStatCounters();
     initTimelineProgress();
