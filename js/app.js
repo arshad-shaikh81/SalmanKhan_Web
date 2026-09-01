@@ -172,7 +172,6 @@ const dialogues = [
    rows simply won't play anything (missing files fail silently).
    ------------------------------------------------------------- */
 const bgmTracks = [
-    { title: "Theme",         movie: "Site Theme",   src: "assets/audio/theme.mp3" },
     { title: "Ek Tha Tiger",  movie: "Ek Tha Tiger",  src: "assets/audio/ekthatiger.mp3" },
     { title: "Radhe",         movie: "Radhe",         src: "assets/audio/radhe.mp3" },
     { title: "Sikandar",      movie: "Sikandar",      src: "assets/audio/sikandar.mp3" }
@@ -233,12 +232,15 @@ function initHero() {
 
 /* -------------------------------------------------------------
    3c. BACKGROUND MUSIC
+/* -------------------------------------------------------------
+   3c. BACKGROUND MUSIC
    Tries to play automatically on every page load (once through, no
    loop). Most browsers block autoplay-with-sound until the visitor
-   interacts with the page at least once -- so if the direct autoplay
-   attempt is blocked, playback starts silently on the visitor's
-   first click/tap/keypress instead. The floating button always lets
-   the visitor pause or manually replay.
+   interacts with the page -- if that direct attempt is blocked, the
+   track simply stays paused (no sound) until the visitor presses the
+   floating button themselves. It does NOT start on a random click
+   anywhere on the page -- only on load, or on an explicit press of
+   the button.
    ------------------------------------------------------------- */
 function initMusic() {
     const audio = document.getElementById("bgMusic");
@@ -264,19 +266,9 @@ function initMusic() {
             playPromise
                 .then(() => setPlayingUI(true))
                 .catch(() => {
-                    // Autoplay blocked -- wait for the first user interaction, then try once.
-                    // Only "click" is used (not "touchstart"): some mobile browsers reject
-                    // play() calls made during touchstart (it can just be a scroll gesture),
-                    // and that would burn our one-shot listener before a real tap ever lands.
-                    const startOnInteraction = () => {
-                        audio.play().then(() => setPlayingUI(true)).catch(() => {});
-                        ["click", "keydown"].forEach(evt =>
-                            document.removeEventListener(evt, startOnInteraction)
-                        );
-                    };
-                    ["click", "keydown"].forEach(evt =>
-                        document.addEventListener(evt, startOnInteraction, { once: true })
-                    );
+                    // Autoplay blocked -- stay paused. The visitor can start
+                    // playback anytime with the floating button below.
+                    setPlayingUI(false);
                 });
         }
     };
@@ -866,11 +858,11 @@ function renderCategories() {
     if (!grid) return;
 
     const categoryMeta = [
-        { key: "movies",    label: "Movies",     desc: "On-screen moments" },
+        { key: "movies",    label: "Movies",     desc: "On-screen moments",image: "images/movies/karanarjun-1.jpg" },
         { key: "events",    label: "Events",     desc: "Public appearances" },
         { key: "bgm",       label: "Popular BGM", desc: "Iconic scores & tracks", image: "images/movies/kick-1.jpg" },
         { key: "old-photos", label: "Old Photos", desc: "Throwback archive" },
-        { key: "wallpapers", label: "Wallpapers", desc: "HD downloads" }
+        { key: "wallpapers", label: "Wallpapers", desc: "HD downloads",image: "images/wallpapers/wallpaper-10.jpg" }
     ];
 
     // Movies, Wallpapers, and Popular BGM each have their own dedicated
