@@ -366,8 +366,8 @@
                 document.getElementById("signupEmail").value.trim(),
                 document.getElementById("signupPassword").value
             );
-            setMessage("Account created! Redirecting...", "success");
-            setTimeout(goToNext, 800);
+            setMessage("Account created! Please check your email to verify your account before logging in.", "success");
+            setTimeout(showLogin, 2000);
         } catch (err) {
             setMessage(friendlyAuthError(err), "error");
         } finally {

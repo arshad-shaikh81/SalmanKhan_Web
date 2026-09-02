@@ -7,6 +7,7 @@ import {
     signOut,
     onAuthStateChanged,
     updateProfile,
+    sendEmailVerification,
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
 const googleProvider = new GoogleAuthProvider();
@@ -15,12 +16,21 @@ const googleProvider = new GoogleAuthProvider();
 export async function signup(name, email, password) {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     if (name) await updateProfile(cred.user, { displayName: name });
+    await sendEmailVerification(cred.user);
+    await signOut(auth);
     return cred.user;
 }
 
 /* ---------- Log in with email + password ---------- */
 export async function login(email, password) {
     const cred = await signInWithEmailAndPassword(auth, email, password);
+    if (!cred.user.emailVerified) {
+        await sendEmailVerification(cred.user);
+        await signOut(auth);
+        const err = new Error("Email not verified");
+        err.code = "auth/email-not-verified";
+        throw err;
+    }
     return cred.user;
 }
 
@@ -57,6 +67,7 @@ export function friendlyAuthError(error) {
         "auth/user-not-found": "This email is not registered.",
         "auth/wrong-password": "Incorrect password.",
         "auth/invalid-credential": "Incorrect email or password.",
+        "auth/email-not-verified": "Your email isn't verified yet. We've sent a new verification link — please check your inbox.",
         "auth/popup-closed-by-user": "Google popup was closed. Please try again.",
         "auth/too-many-requests": "Too many attempts. Please try again later.",
     };
