@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Events | Salman Khan Photo Gallery</title>
+    <meta name="description" content="Public appearances, award nights, charity galas, and tour moments — a gallery of Salman Khan's biggest event highlights." />
+
+    <meta property="og:title" content="Salman Khan — Events" />
+    <meta property="og:description" content="Public appearances, award nights, and tour moments from Salman Khan." />
+    <meta property="og:type" content="website" />
+
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<header class="navbar">
+    <a href="index.html" class="logo">SALMAN KHAN</a>
+
+    <nav aria-label="Main navigation">
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="bgm.html">Popular BGM</a></li>
+            <li><a href="movies.html">Movies</a></li>
+            <li><a href="events.html" class="active">Events</a></li>
+            <li><a href="old-photos.html">Old Photos</a></li>
+            <li><a href="wallpapers.html">Wallpapers</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+
+<!-- ============ PAGE HEADER ============ -->
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow">Public Appearances</span>
+        <h1 class="page-title">Event Photos</h1>
+        <p class="page-sub">Award nights, charity galas, tours, and appearances — tap any card to view it full size. Looking for the career timeline instead? <a href="event.html">See The Journey So Far</a>.</p>
+    </div>
+</section>
+
+<!-- ============ EVENTS GRID ============ -->
+<section class="wallpapers-section">
+    <div class="container">
+        <div class="events-filter" data-events-filter></div>
+        <div class="events-grid" data-events-grid></div>
+    </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <span class="logo">SALMAN KHAN</span>
+                <p>An unofficial fan-made photo gallery celebrating the on-screen and off-screen journey of Salman Khan. Built for browsing only — no downloads unless noted.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Explore</h4>
+                <a href="movies.html">Movies</a>
+                <a href="events.html">Events</a>
+                <a href="old-photos.html">Old Photos</a>
+                <a href="wallpapers.html">Wallpapers</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Site</h4>
+                <a href="about.html">About</a>
+                <a href="index.html">Home</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Salman Khan Photo Gallery — Fan Project. Not affiliated with Salman Khan or his official team.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ============ FULL-SCREEN VIEWER (shared with Wallpapers / Old Photos) ============ -->
+<div class="photo-viewer" id="photoViewer" role="dialog" aria-modal="true" aria-label="Event photo viewer" hidden>
+    <div class="photo-viewer-backdrop" id="photoViewerBackdrop"></div>
+
+    <button class="photo-viewer-back" id="photoViewerClose" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Back</span>
+    </button>
+
+    <button class="photo-viewer-nav photo-viewer-prev" id="photoViewerPrev" aria-label="Previous photo">&#8249;</button>
+    <button class="photo-viewer-nav photo-viewer-next" id="photoViewerNext" aria-label="Next photo">&#8250;</button>
+
+    <div class="photo-viewer-stage">
+        <img id="photoViewerImg" src="" alt="" />
+    </div>
+
+    <div class="photo-viewer-actions">
+        <button class="btn btn-primary photo-viewer-download" id="photoViewerDownload" aria-label="Download this photo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Download
+        </button>
+    </div>
+</div><!-- ============ POPULAR BGM MODAL ============ -->
+<div class="dialogue-modal bgm-modal" id="bgmModal" role="dialog" aria-modal="true" aria-label="Popular BGM tracks" hidden>
+    <div class="dialogue-modal-backdrop" id="bgmModalBackdrop"></div>
+    <div class="dialogue-modal-content">
+        <button class="dialogue-modal-close" id="bgmModalClose" aria-label="Close">&times;</button>
+        <h2 class="dialogue-modal-title">Popular BGM</h2>
+        <div class="bgm-list" id="bgmList">
+            <!-- populated by js/app.js -->
+        </div>
+    </div>
+</div>
+
+<audio id="bgMusic" src="assets/audio/theme.mp3" preload="none"></audio>
+
+<button id="musicToggle" class="music-toggle" aria-label="Play background music" aria-pressed="false">
+    <svg class="icon-music-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.6"/>
+    </svg>
+    <svg class="icon-music-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" hidden>
+        <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.6"/>
+        <line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+</button>
+
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -18,10 +18,12 @@ const photos = [
     { id: 6,  title: "Ek Tha Tiger Poster Still",     category: "movies",    image: "images/movies/ektha-tiger-1.jpg",   featured: false, movieTag: "ektatiger" },
     { id: 7,  title: "Wanted — First Look",           category: "movies",    image: "images/movies/wanted-1.jpg",        featured: false, movieTag: "wanted" },
 
-    { id: 8,  title: "Being Human Charity Gala",      category: "events",    image: "images/events/being-human-1.jpg",   featured: true },
-    { id: 9,  title: "Bigg Boss Season Launch",       category: "events",    image: "images/events/bigg-boss-1.jpg",     featured: false },
-    { id: 10, title: "Da-Bangg Reloaded Tour",        category: "events",    image: "images/events/dabangg-tour-1.jpg",  featured: false },
-    { id: 11, title: "Award Night Appearance",        category: "events",    image: "images/events/awards-1.jpg",        featured: false },
+    { id: 8,  title: "Being Human Charity Gala",      category: "events",    image: "images/events/being-human-1.jpg",   featured: true,  eventYear: "2023", eventTag: "Charity", eventDesc: "A star-studded evening raising funds for the Being Human Foundation's education and healthcare initiatives." },
+    { id: 9,  title: "Bigg Boss Season Launch",       category: "events",    image: "images/events/bigg-boss-1.jpg",     featured: false, eventYear: "2023", eventTag: "TV Launch", eventDesc: "The grand launch night kicking off another season of India's biggest reality show, hosted by Salman Khan." },
+    { id: 10, title: "Da-Bangg Reloaded Tour",        category: "events",    image: "images/events/dabangg-tour-1.jpg",  featured: false, eventYear: "2022", eventTag: "Concert Tour", eventDesc: "The Da-Bangg Reloaded world tour brought Bollywood's biggest stars together for a night of music and dance." },
+    { id: 11, title: "Award Night Appearance",        category: "events",    image: "images/events/awards-1.jpg",        featured: false, eventYear: "2022", eventTag: "Awards", eventDesc: "A red-carpet appearance at one of the year's marquee film award ceremonies." },
+    { id: 900, title: "Eid Celebration Meet-Up",      category: "events",    image: "images/events/eid-celebration-1.jpg", featured: false, eventYear: "2024", eventTag: "Public Appearance", eventDesc: "The annual Eid gathering at Galaxy Apartments, greeting hundreds of fans who line up outside every year." },
+    { id: 901, title: "Da-Bangg Tour Reunion",        category: "events",    image: "images/events/dabangg-tour-2.jpg",  featured: false, eventYear: "2024", eventTag: "Concert Tour", eventDesc: "A reunion leg of the Da-Bangg tour, bringing the ensemble cast back on stage for fans across new cities." },
 
     { id: 12, title: "Studio Portrait — Classic",     category: "portraits", image: "images/portraits/portrait-1.jpg",   featured: true },
     { id: 13, title: "Black & White Close-up",        category: "portraits", image: "images/portraits/portrait-2.jpg",   featured: false },
@@ -738,23 +740,52 @@ function initDialogueParallax() {
 /* -------------------------------------------------------------
    4. FADE-UP SCROLL ANIMATIONS (lightweight IntersectionObserver)
    ------------------------------------------------------------- */
+/* -------------------------------------------------------------
+   4. FADE-UP SCROLL ANIMATIONS (lightweight IntersectionObserver)
+   Kept as a module-level observer (not a local variable) so that
+   pages which re-render part of their DOM after load -- like the
+   Events grid re-rendering when a filter pill is clicked -- can
+   register their new .fade-up cards with the SAME observer via
+   revealFadeUps() below, instead of those cards being stuck at
+   opacity:0 forever because nothing ever re-observed them.
+   ------------------------------------------------------------- */
+let fadeUpObserver = null;
+
 function initScrollReveal() {
     const items = document.querySelectorAll(".fade-up");
-    if (!items.length || !("IntersectionObserver" in window)) {
+    if (!items.length) return;
+
+    if (!("IntersectionObserver" in window)) {
         items.forEach(el => el.classList.add("in-view"));
         return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
+    fadeUpObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add("in-view");
-                observer.unobserve(entry.target);
+                fadeUpObserver.unobserve(entry.target);
             }
         });
     }, { threshold: 0.1, rootMargin: "0px 0px -60px 0px" });
 
-    items.forEach(el => observer.observe(el));
+    items.forEach(el => fadeUpObserver.observe(el));
+}
+
+/* Registers freshly-injected .fade-up elements (e.g. after re-rendering
+   a grid) with the shared observer so they animate in instead of
+   staying invisible. Falls back to revealing them immediately if the
+   observer hasn't been created yet or IntersectionObserver isn't
+   supported. Safe to call every time a container's innerHTML changes. */
+function revealFadeUps(container) {
+    const items = container.querySelectorAll(".fade-up");
+    if (!items.length) return;
+
+    if (fadeUpObserver) {
+        items.forEach(el => fadeUpObserver.observe(el));
+    } else {
+        items.forEach(el => el.classList.add("in-view"));
+    }
 }
 
 /* -------------------------------------------------------------
@@ -931,6 +962,7 @@ function renderCategories() {
         if (key === "wallpapers") return "wallpapers.html";
         if (key === "bgm") return "bgm.html";
         if (key === "old-photos") return "old-photos.html";
+        if (key === "events") return "events.html";
         return `gallery.html?category=${key}`;
     };
 
@@ -956,9 +988,20 @@ function renderCategories() {
    screen, with a top-left Back button, a bottom Download button,
    and Prev/Next (buttons, arrow keys, Escape to close).
    ------------------------------------------------------------- */
-function initFullscreenPhotoViewer(items, grid, cardClass, altPrefix, fileNamePrefix) {
+function initFullscreenPhotoViewer(itemsOrGetter, grid, cardClass, altPrefix, fileNamePrefix) {
     const modal = document.getElementById("photoViewer");
     if (!modal) return;
+
+    // Accept either a plain array (Wallpapers/Old Photos: fixed list) or a
+    // getter function (Events: list can change when a filter is applied).
+    // This also lets the caller avoid re-attaching listeners on every
+    // re-render -- see the "already wired" guard below.
+    const getItems = typeof itemsOrGetter === "function" ? itemsOrGetter : () => itemsOrGetter;
+
+    // Grid can be re-rendered (e.g. filtering) without re-running this whole
+    // function -- only wire up the modal's own controls once per grid.
+    const alreadyWired = grid.dataset.viewerWired === "1";
+    grid.dataset.viewerWired = "1";
 
     const modalImg = document.getElementById("photoViewerImg");
     const backdrop = document.getElementById("photoViewerBackdrop");
@@ -972,6 +1015,8 @@ function initFullscreenPhotoViewer(items, grid, cardClass, altPrefix, fileNamePr
     let currentIndex = 0;
 
     const show = (index) => {
+        const items = getItems();
+        if (!items.length) return;
         currentIndex = (index + items.length) % items.length;
         const photo = items[currentIndex];
         modalImg.src = photo.image;
@@ -991,6 +1036,12 @@ function initFullscreenPhotoViewer(items, grid, cardClass, altPrefix, fileNamePr
         modal.hidden = true;
         document.body.style.overflow = "";
     };
+
+    // Everything below (grid clicks + the shared modal controls) only needs
+    // wiring once per grid, even if this function runs again -- e.g. Events
+    // re-renders its grid on every filter click, but the grid container node
+    // and #photoViewer markup are stable across those re-renders.
+    if (alreadyWired) return;
 
     grid.addEventListener("click", (e) => {
         const card = e.target.closest(`.${cardClass}`);
@@ -1126,6 +1177,82 @@ function renderOldPhotos() {
 }
 
 /* -------------------------------------------------------------
+   5d-2. EVENTS PAGE RENDERER (used on events.html)
+   Renders every photo in the "events" category as a grid of cards
+   with title/year/tag info, optionally filterable by tag. Tapping
+   a card opens the shared full-screen viewer (Back / Download /
+   Prev / Next), same as Wallpapers and Old Photos.
+   ------------------------------------------------------------- */
+let currentEventItems = [];
+let eventsInitialRenderDone = false;
+
+function renderEvents(activeTag) {
+    const grid = document.querySelector("[data-events-grid]");
+    if (!grid) return;
+
+    const allEvents = photos.filter(p => p.category === "events");
+    const events = activeTag && activeTag !== "all"
+        ? allEvents.filter(e => e.eventTag === activeTag)
+        : allEvents;
+
+    currentEventItems = events;
+
+    grid.innerHTML = events.map((event, index) => `
+      <figure class="event-card fade-up" data-index="${index}" tabindex="0" role="button"
+              aria-label="Open ${event.title} full screen">
+        <div class="event-card-media">
+          <img src="${event.image}" alt="${event.title}" loading="lazy"
+               onerror="this.src='https://placehold.co/640x800/1c1a20/c9a227?text=${encodeURIComponent(event.title)}'">
+        </div>
+        <figcaption class="event-card-meta">
+          ${event.eventTag ? `<span class="event-tag">${event.eventTag}</span>` : ""}
+          <h3 class="event-title">${event.title}</h3>
+          ${event.eventYear ? `<span class="event-year">${event.eventYear}</span>` : ""}
+        </figcaption>
+      </figure>
+    `).join("");
+
+    // First page load: let the page-wide initScrollReveal() (called once,
+    // after all renderers run) pick these cards up -- same as every other
+    // grid on the site, so they get the normal scroll fade-in.
+    // Any re-render after that (i.e. a filter pill was clicked) needs to
+    // explicitly re-register its new cards, or they'd sit at opacity:0
+    // forever since nothing else would ever observe them.
+    if (eventsInitialRenderDone) {
+        revealFadeUps(grid);
+    } else {
+        eventsInitialRenderDone = true;
+    }
+
+    initFullscreenPhotoViewer(() => currentEventItems, grid, "event-card", "Salman Khan event", "salman-khan-event");
+}
+
+/* -------------------------------------------------------------
+   Events page tag filter buttons (All / Charity / Awards / etc.)
+   ------------------------------------------------------------- */
+function initEventFilters() {
+    const filterBar = document.querySelector("[data-events-filter]");
+    if (!filterBar) return;
+
+    const allEvents = photos.filter(p => p.category === "events");
+    const tags = ["all", ...new Set(allEvents.map(e => e.eventTag).filter(Boolean))];
+
+    filterBar.innerHTML = tags.map((tag, i) => `
+      <button class="filter-btn${i === 0 ? " active" : ""}" data-value="${tag}">
+        ${tag === "all" ? "All" : tag}
+      </button>
+    `).join("");
+
+    filterBar.addEventListener("click", (e) => {
+        const btn = e.target.closest(".filter-btn");
+        if (!btn) return;
+        filterBar.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderEvents(btn.dataset.value);
+    });
+}
+
+/* -------------------------------------------------------------
    5c. MOVIES PAGE RENDERER (used on movies.html)
    Every movie now gets its OWN separate heading (its year), even if
    another movie shares the same release year -- movies are no longer
@@ -1253,6 +1380,8 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCategories();
     renderWallpapers();
     renderOldPhotos();
+    initEventFilters();
+    renderEvents();
     renderMoviesPage();
     renderMovieDetailPage();
     initMovieSort();
