@@ -28,6 +28,33 @@
         right: 0;
     }
 
+    /* Push Login/Logout to the bottom of the mobile menu and style it
+       as a distinct pill button instead of a plain text link. */
+    .nav-links #navAuthItem {
+        margin-top: auto;
+        padding-top: var(--space-sm);
+        border-top: 1px solid var(--color-border);
+    }
+
+    .nav-links #navAuthItem a {
+        display: block;
+        text-align: center;
+        padding: 0.65rem 1rem;
+        border-radius: var(--radius);
+        background: var(--color-gold);
+        color: #1a1305;
+        font-weight: 600;
+    }
+
+    .nav-links #navAuthItem a::after {
+        display: none;
+    }
+
+    .nav-links #navAuthItem a:hover {
+        background: var(--color-gold-light);
+        color: #1a1305;
+    }
+
     .hero-content {
         padding: var(--space-lg) var(--space-sm) var(--space-md);
     }
