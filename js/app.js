@@ -18,11 +18,22 @@ const photos = [
     { id: 6,  title: "Ek Tha Tiger Poster Still",     category: "movies",    image: "images/movies/ektha-tiger-1.jpg",   featured: false, movieTag: "ektatiger" },
     { id: 7,  title: "Wanted — First Look",           category: "movies",    image: "images/movies/wanted-1.jpg",        featured: false, movieTag: "wanted" },
 
+    // NOTE ON MULTIPLE PHOTOS PER EVENT: to add more photos to an existing
+    // event, push another entry below with the SAME title as an existing
+    // one (e.g. two entries titled "Being Human Charity Gala" with
+    // different `image` paths) -- they'll automatically be grouped into
+    // ONE card on the Events page, and that card's Prev/Next arrows will
+    // slide between just those photos (description stays the same).
+    // (Alternative: give matching entries an explicit `eventGroup: "some-key"`
+    // field instead of relying on matching titles.)
     { id: 8,  title: "Being Human Charity Gala",      category: "events",    image: "images/events/being-human-1.jpg",   featured: true,  eventYear: "2023", eventTag: "Charity", eventDesc: "A star-studded evening raising funds for the Being Human Foundation's education and healthcare initiatives." },
-    { id: 9,  title: "Bigg Boss Season Launch",       category: "events",    image: "images/events/bigg-boss-1.jpg",     featured: false, eventYear: "2023", eventTag: "TV Launch", eventDesc: "The grand launch night kicking off another season of India's biggest reality show, hosted by Salman Khan." },
+    { id: 9,  title: "RED | FF | SEA 25",       category: "events",    image: "images/events/red-ff.png",     featured: false, eventYear: "2025", eventTag: "Concert Tour", eventDesc: "Salman Khan takes the global stage at the Red\n" +
+            "Sea International Film Festival presenting an\n" +
+            "award to ldris Elba and celebrating cinema\n" +
+            "with Johnny Depp" },
     { id: 10, title: "Da-Bangg Reloaded Tour",        category: "events",    image: "images/events/dabangg-tour-1.jpg",  featured: false, eventYear: "2022", eventTag: "Concert Tour", eventDesc: "The Da-Bangg Reloaded world tour brought Bollywood's biggest stars together for a night of music and dance." },
     { id: 11, title: "Award Night Appearance",        category: "events",    image: "images/events/awards-1.jpg",        featured: false, eventYear: "2022", eventTag: "Awards", eventDesc: "A red-carpet appearance at one of the year's marquee film award ceremonies." },
-    { id: 900, title: "Eid Celebration Meet-Up",      category: "events",    image: "images/events/eid-celebration-1.jpg", featured: false, eventYear: "2024", eventTag: "Public Appearance", eventDesc: "The annual Eid gathering at Galaxy Apartments, greeting hundreds of fans who line up outside every year." },
+    { id: 900, title: "Eid Celebration Meet-Up",      category: "events",    image: "images/events/eid2024.jpg", featured: false, eventYear: "2024", eventTag: "Public Appearance", eventDesc: "The annual Eid gathering at Galaxy Apartments, greeting hundreds of fans who line up outside every year." },
     { id: 901, title: "Da-Bangg Tour Reunion",        category: "events",    image: "images/events/dabangg-tour-2.jpg",  featured: false, eventYear: "2024", eventTag: "Concert Tour", eventDesc: "A reunion leg of the Da-Bangg tour, bringing the ensemble cast back on stage for fans across new cities." },
 
     { id: 12, title: "Studio Portrait — Classic",     category: "portraits", image: "images/portraits/portrait-1.jpg",   featured: true },
@@ -1172,6 +1183,218 @@ function initFullscreenPhotoViewer(itemsOrGetter, grid, cardClass, altPrefix, fi
 }
 
 /* -------------------------------------------------------------
+   5b-ii. EVENTS "DESCRIPTION CARD" VIEWER (used ONLY on events.html)
+   Unlike Wallpapers/Old Photos, clicking an event photo must NOT open
+   the download-oriented fullscreen viewer -- it opens a small popup
+   card (image + title/year/tag/description) instead, with Prev/Next
+   arrows that slide between the OTHER event photos inside that same
+   small card. No Download button, no Share button here at all.
+
+   Built entirely in JS (creates its own markup + styles on first use)
+   so it doesn't depend on any specific HTML already existing on
+   events.html -- safe to drop in without touching that file.
+   ------------------------------------------------------------- */
+function ensureEventDescStyles() {
+    if (document.getElementById("eventDescViewerStyles")) return;
+    const style = document.createElement("style");
+    style.id = "eventDescViewerStyles";
+    style.textContent = `
+        .event-desc-backdrop {
+            position: fixed; inset: 0; background: rgba(10,9,12,0.82);
+            z-index: 9998; display: flex; align-items: center; justify-content: center;
+            padding: 24px;
+        }
+        .event-desc-backdrop[hidden] { display: none; }
+        .event-desc-card {
+            position: relative; background: #1c1a20; color: #f1eee6;
+            border: 1px solid rgba(201,162,39,0.35); border-radius: 14px;
+            max-width: 460px; width: 100%; max-height: 88vh; overflow: hidden;
+            display: flex; flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .event-desc-media {
+            width: 100%; aspect-ratio: 4 / 5; background: #000;
+            overflow: hidden; flex-shrink: 0;
+        }
+        .event-desc-media img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            opacity: 1; transition: opacity 0.25s ease;
+        }
+        .event-desc-media img.is-fading { opacity: 0; }
+        .event-desc-body { padding: 18px 20px 20px; overflow-y: auto; }
+        .event-desc-tag {
+            display: inline-block; font-size: 12px; letter-spacing: 0.04em;
+            text-transform: uppercase; color: #c9a227; margin-bottom: 6px;
+        }
+        .event-desc-title { font-size: 20px; margin: 0 0 4px; font-weight: 600; }
+        .event-desc-year { font-size: 13px; color: #b8b3a8; margin: 0 0 12px; }
+        .event-desc-text { font-size: 14.5px; line-height: 1.55; color: #ddd8cd; margin: 0; }
+        .event-desc-close {
+            position: absolute; top: 10px; right: 10px; z-index: 2;
+            width: 34px; height: 34px; border-radius: 50%; border: none;
+            background: rgba(0,0,0,0.55); color: #fff; font-size: 18px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .event-desc-nav {
+            position: absolute; top: 40%; transform: translateY(-50%);
+            width: 38px; height: 38px; border-radius: 50%; border: none;
+            background: rgba(0,0,0,0.55); color: #fff; font-size: 18px;
+            cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center;
+        }
+        .event-desc-nav.prev { left: 10px; }
+        .event-desc-nav.next { right: 10px; }
+        .event-desc-nav:disabled { opacity: 0.3; cursor: default; }
+    `;
+    document.head.appendChild(style);
+}
+
+/* Groups flat event entries that belong to the same event into one card
+   with a photos[] array. Two entries are treated as the SAME event when
+   they share either an explicit `eventGroup` key, or (if that's absent)
+   the same `title`. So to add extra photos to an existing event, just
+   push another entry into the `photos` array above with the SAME title
+   (or give matching ones an `eventGroup: "some-key"` field) and a
+   different `image` -- no other change needed, it'll show up as another
+   slide inside that event's card automatically. */
+function groupEventPhotos(events) {
+    const order = [];
+    const map = new Map();
+
+    events.forEach(e => {
+        const key = e.eventGroup || e.title;
+        if (!map.has(key)) {
+            const group = {
+                title: e.title,
+                eventYear: e.eventYear,
+                eventTag: e.eventTag,
+                eventDesc: e.eventDesc,
+                images: []
+            };
+            map.set(key, group);
+            order.push(group);
+        }
+        map.get(key).images.push(e.image);
+    });
+
+    return order;
+}
+
+function initEventDescriptionViewer(getGroups, grid) {
+    if (!grid) return;
+
+    // Only wire up the grid's click/keyboard listeners once, same guard
+    // pattern as initFullscreenPhotoViewer -- safe across filter re-renders.
+    const alreadyWired = grid.dataset.descViewerWired === "1";
+    grid.dataset.descViewerWired = "1";
+
+    ensureEventDescStyles();
+
+    let backdrop = document.getElementById("eventDescBackdrop");
+    if (!backdrop) {
+        backdrop = document.createElement("div");
+        backdrop.id = "eventDescBackdrop";
+        backdrop.className = "event-desc-backdrop";
+        backdrop.hidden = true;
+        backdrop.innerHTML = `
+            <div class="event-desc-card" role="dialog" aria-modal="true" aria-label="Event details">
+                <button type="button" class="event-desc-close" aria-label="Close">&times;</button>
+                <button type="button" class="event-desc-nav prev" aria-label="Previous photo">&#10094;</button>
+                <button type="button" class="event-desc-nav next" aria-label="Next photo">&#10095;</button>
+                <div class="event-desc-media">
+                    <img id="eventDescImg" alt="" onerror="this.src='https://placehold.co/640x800/1c1a20/c9a227?text=Photo'">
+                </div>
+                <div class="event-desc-body">
+                    <span class="event-desc-tag" id="eventDescTag"></span>
+                    <h3 class="event-desc-title" id="eventDescTitle"></h3>
+                    <p class="event-desc-year" id="eventDescYear"></p>
+                    <p class="event-desc-text" id="eventDescText"></p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(backdrop);
+
+        backdrop.addEventListener("click", (e) => {
+            if (e.target === backdrop) closeEventDesc();
+        });
+        backdrop.querySelector(".event-desc-close").addEventListener("click", closeEventDesc);
+        backdrop.querySelector(".event-desc-nav.prev").addEventListener("click", () => showEventImage(currentEventImageIndex - 1));
+        backdrop.querySelector(".event-desc-nav.next").addEventListener("click", () => showEventImage(currentEventImageIndex + 1));
+
+        document.addEventListener("keydown", (e) => {
+            if (backdrop.hidden) return;
+            if (e.key === "Escape") closeEventDesc();
+            if (e.key === "ArrowLeft") showEventImage(currentEventImageIndex - 1);
+            if (e.key === "ArrowRight") showEventImage(currentEventImageIndex + 1);
+        });
+    }
+
+    function closeEventDesc() {
+        backdrop.hidden = true;
+        document.body.style.overflow = "";
+    }
+
+    // Slides between PHOTOS WITHIN the currently open event only -- the
+    // title/year/tag/description text never changes here, only the image.
+    function showEventImage(index) {
+        const group = currentEventGroup;
+        if (!group || !group.images.length) return;
+        currentEventImageIndex = (index + group.images.length) % group.images.length;
+
+        const img = document.getElementById("eventDescImg");
+        img.classList.add("is-fading");
+        setTimeout(() => {
+            img.src = group.images[currentEventImageIndex];
+            img.alt = group.title;
+            img.classList.remove("is-fading");
+        }, 120);
+
+        // If this event only has one photo, disable the arrows instead of
+        // letting them do nothing pointlessly.
+        const multi = group.images.length > 1;
+        backdrop.querySelector(".event-desc-nav.prev").disabled = !multi;
+        backdrop.querySelector(".event-desc-nav.next").disabled = !multi;
+    }
+
+    // Opens a specific event's card -- sets the fixed title/year/tag/desc
+    // once, then shows its first photo.
+    function openEventDesc(groupIndex) {
+        const groups = getGroups();
+        const group = groups[groupIndex];
+        if (!group) return;
+        currentEventGroup = group;
+
+        document.getElementById("eventDescTag").textContent = group.eventTag || "";
+        document.getElementById("eventDescTag").style.display = group.eventTag ? "" : "none";
+        document.getElementById("eventDescTitle").textContent = group.title;
+        document.getElementById("eventDescYear").textContent = group.eventYear || "";
+        document.getElementById("eventDescYear").style.display = group.eventYear ? "" : "none";
+        document.getElementById("eventDescText").textContent = group.eventDesc || "";
+
+        showEventImage(0);
+        backdrop.hidden = false;
+        document.body.style.overflow = "hidden";
+    }
+
+    if (alreadyWired) return;
+
+    grid.addEventListener("click", (e) => {
+        const card = e.target.closest(".event-card");
+        if (!card) return;
+        openEventDesc(Number(card.dataset.index));
+    });
+
+    grid.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const card = e.target.closest(".event-card");
+        if (!card) return;
+        e.preventDefault();
+        openEventDesc(Number(card.dataset.index));
+    });
+}
+let currentEventGroup = null;
+let currentEventImageIndex = 0;
+
+/* -------------------------------------------------------------
    5c. WALLPAPERS PAGE RENDERER (used on wallpapers.html)
    Renders every photo flagged downloadable:true as a plain thumbnail.
    Tapping one opens the shared full-screen viewer (Back / Download /
@@ -1219,12 +1442,16 @@ function renderOldPhotos() {
 
 /* -------------------------------------------------------------
    5d-2. EVENTS PAGE RENDERER (used on events.html)
-   Renders every photo in the "events" category as a grid of cards
-   with title/year/tag info, optionally filterable by tag. Tapping
-   a card opens the shared full-screen viewer (Back / Download /
-   Prev / Next), same as Wallpapers and Old Photos.
+   Renders one card per EVENT (not per photo) -- if several photo
+   entries in the `photos` array share the same title (or an explicit
+   eventGroup key), they're grouped into a single card here via
+   groupEventPhotos(). The grid thumbnail uses that event's first
+   photo; tapping the card opens the small description popup, where
+   the Prev/Next arrows slide between that SAME event's other photos
+   (title/year/tag/description stay fixed) -- see
+   initEventDescriptionViewer above.
    ------------------------------------------------------------- */
-let currentEventItems = [];
+let currentEventGroups = [];
 let eventsInitialRenderDone = false;
 
 function renderEvents(activeTag) {
@@ -1232,23 +1459,23 @@ function renderEvents(activeTag) {
     if (!grid) return;
 
     const allEvents = photos.filter(p => p.category === "events");
-    const events = activeTag && activeTag !== "all"
+    const filtered = activeTag && activeTag !== "all"
         ? allEvents.filter(e => e.eventTag === activeTag)
         : allEvents;
 
-    currentEventItems = events;
+    currentEventGroups = groupEventPhotos(filtered);
 
-    grid.innerHTML = events.map((event, index) => `
+    grid.innerHTML = currentEventGroups.map((group, index) => `
       <figure class="event-card fade-up" data-index="${index}" tabindex="0" role="button"
-              aria-label="Open ${event.title} full screen">
+              aria-label="Open ${group.title} details">
         <div class="event-card-media">
-          <img src="${event.image}" alt="${event.title}" loading="lazy"
-               onerror="this.src='https://placehold.co/640x800/1c1a20/c9a227?text=${encodeURIComponent(event.title)}'">
+          <img src="${group.images[0]}" alt="${group.title}" loading="lazy"
+               onerror="this.src='https://placehold.co/640x800/1c1a20/c9a227?text=${encodeURIComponent(group.title)}'">
         </div>
         <figcaption class="event-card-meta">
-          ${event.eventTag ? `<span class="event-tag">${event.eventTag}</span>` : ""}
-          <h3 class="event-title">${event.title}</h3>
-          ${event.eventYear ? `<span class="event-year">${event.eventYear}</span>` : ""}
+          ${group.eventTag ? `<span class="event-tag">${group.eventTag}</span>` : ""}
+          <h3 class="event-title">${group.title}</h3>
+          ${group.eventYear ? `<span class="event-year">${group.eventYear}</span>` : ""}
         </figcaption>
       </figure>
     `).join("");
@@ -1265,7 +1492,7 @@ function renderEvents(activeTag) {
         eventsInitialRenderDone = true;
     }
 
-    initFullscreenPhotoViewer(() => currentEventItems, grid, "event-card", "Salman Khan event", "salman-khan-event");
+    initEventDescriptionViewer(() => currentEventGroups, grid);
 }
 
 /* -------------------------------------------------------------
