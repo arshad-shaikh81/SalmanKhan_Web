@@ -51,14 +51,14 @@ export function requireAuth() {
 /* ---------- Friendly error messages for common Firebase auth codes ---------- */
 export function friendlyAuthError(error) {
     const map = {
-        "auth/email-already-in-use": "Ye email pehle se registered hai. Login try karo.",
-        "auth/invalid-email": "Email sahi format mein daalo.",
-        "auth/weak-password": "Password kam se kam 6 characters ka hona chahiye.",
-        "auth/user-not-found": "Ye email registered nahi hai.",
-        "auth/wrong-password": "Password galat hai.",
-        "auth/invalid-credential": "Email ya password galat hai.",
-        "auth/popup-closed-by-user": "Google popup band ho gaya, dobara try karo.",
-        "auth/too-many-requests": "Bahut attempts ho gaye, thodi der baad try karo.",
+        "auth/email-already-in-use": "This email is already registered. Please try logging in.",
+        "auth/invalid-email": "Please enter a valid email address.",
+        "auth/weak-password": "Password must be at least 6 characters long.",
+        "auth/user-not-found": "This email is not registered.",
+        "auth/wrong-password": "Incorrect password.",
+        "auth/invalid-credential": "Incorrect email or password.",
+        "auth/popup-closed-by-user": "Google popup was closed. Please try again.",
+        "auth/too-many-requests": "Too many attempts. Please try again later.",
     };
-    return map[error.code] || "Kuch galat ho gaya. Dobara try karo.";
+    return map[error.code] || "Something went wrong. Please try again.";
 }
