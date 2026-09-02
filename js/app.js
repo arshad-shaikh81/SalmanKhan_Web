@@ -281,8 +281,6 @@ function initHero() {
 
 /* -------------------------------------------------------------
    3c. BACKGROUND MUSIC
-/* -------------------------------------------------------------
-   3c. BACKGROUND MUSIC
    Tries to play automatically on every page load (once through, no
    loop). Most browsers block autoplay-with-sound until the visitor
    interacts with the page -- if that direct attempt is blocked, the
@@ -739,9 +737,6 @@ function initDialogueParallax() {
 
 /* -------------------------------------------------------------
    4. FADE-UP SCROLL ANIMATIONS (lightweight IntersectionObserver)
-   ------------------------------------------------------------- */
-/* -------------------------------------------------------------
-   4. FADE-UP SCROLL ANIMATIONS (lightweight IntersectionObserver)
    Kept as a module-level observer (not a local variable) so that
    pages which re-render part of their DOM after load -- like the
    Events grid re-rendering when a filter pill is clicked -- can
@@ -1088,7 +1083,46 @@ function initFullscreenPhotoViewer(itemsOrGetter, grid, cardClass, altPrefix, fi
 
     // Share button is optional -- only wired up when the page actually
     // has one (currently just the Wallpapers viewer).
+    //
+    // FIX (localhost vs deployed-site share behaviour):
+    // Previously, any error thrown by navigator.share() -- not just the
+    // user dismissing the native share sheet -- silently did nothing,
+    // so on browsers/devices where navigator.share exists but rejects
+    // (e.g. no share targets registered, permission denied, or the call
+    // losing "user activation") the button appeared to do nothing at all,
+    // and on browsers where navigator.share is undefined it always fell
+    // through to the clipboard-copy path. That's expected behaviour --
+    // the native OS share sheet only shows up on browsers/devices that
+    // actually implement the Web Share API (mobile Chrome/Safari, some
+    // desktop Chromium builds). This version keeps that same real-share-
+    // first behaviour, but now ALSO falls back to copying the link if
+    // navigator.share exists yet fails for a reason other than the user
+    // cancelling it (AbortError), instead of doing nothing.
     if (shareBtn) {
+        const showCopiedFeedback = () => {
+            if (!shareLabel) return;
+            const original = shareLabel.dataset.originalText || shareLabel.textContent;
+            shareLabel.dataset.originalText = original;
+            shareLabel.textContent = "Copied!";
+            setTimeout(() => { shareLabel.textContent = original; }, 1500);
+        };
+
+        const copyLinkFallback = async (url) => {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(url);
+                    showCopiedFeedback();
+                    return;
+                } catch (err) {
+                    // Clipboard permission blocked -- fall through to the
+                    // last-resort prompt below.
+                }
+            }
+            // Very old browsers with neither Web Share nor Clipboard API:
+            // surface the link so the user can copy it manually.
+            window.prompt("Copy this link:", url);
+        };
+
         shareBtn.addEventListener("click", async () => {
             const absoluteUrl = new URL(downloadBtn.dataset.download, window.location.href).href;
             const shareData = {
@@ -1097,28 +1131,35 @@ function initFullscreenPhotoViewer(itemsOrGetter, grid, cardClass, altPrefix, fi
                 url: absoluteUrl
             };
 
-            // Native share sheet where supported (most mobile browsers).
+            // Native share sheet where supported (most mobile browsers, and
+            // some desktop Chromium builds). This is the real share dialog --
+            // it only appears on browsers/devices that implement the Web
+            // Share API; on ones that don't (e.g. most desktop browsers),
+            // navigator.share is undefined and we go straight to the
+            // clipboard fallback below.
             if (navigator.share) {
                 try {
+                    // Optional extra guard: skip straight to fallback if the
+                    // browser reports it can't actually share this data.
+                    if (navigator.canShare && !navigator.canShare(shareData)) {
+                        await copyLinkFallback(absoluteUrl);
+                        return;
+                    }
                     await navigator.share(shareData);
                 } catch (err) {
-                    // User cancelled the share sheet -- nothing to do.
+                    // AbortError = the user closed the native share sheet
+                    // themselves -- respect that and do nothing further.
+                    if (err && err.name === "AbortError") return;
+                    // Any other error (no share targets, permission denied,
+                    // lost user-activation, etc.) -- fall back to copying
+                    // the link instead of failing silently.
+                    await copyLinkFallback(absoluteUrl);
                 }
                 return;
             }
 
             // Desktop fallback: copy the link and briefly confirm it.
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                try {
-                    await navigator.clipboard.writeText(absoluteUrl);
-                    if (shareLabel) {
-                        shareLabel.textContent = "Copied!";
-                        setTimeout(() => { shareLabel.textContent = "Share"; }, 1500);
-                    }
-                } catch (err) {
-                    // Clipboard blocked -- nothing more we can do silently.
-                }
-            }
+            await copyLinkFallback(absoluteUrl);
         });
     }
 
