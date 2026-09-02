@@ -27,9 +27,27 @@ const photos = [
     { id: 13, title: "Black & White Close-up",        category: "portraits", image: "images/portraits/portrait-2.jpg",   featured: false },
     { id: 14, title: "Casual Off-Screen Look",        category: "portraits", image: "images/portraits/portrait-3.jpg",   featured: false },
 
-    { id: 15, title: "Early Career — 90s Era",        category: "old-photos", image: "images/old-photos/old-1.jpg",      featured: false },
-    { id: 16, title: "Maine Pyar Kiya Era",           category: "old-photos", image: "images/old-photos/old-2.jpg",      featured: false },
-    { id: 17, title: "Debut Years Throwback",         category: "old-photos", image: "images/old-photos/old-3.jpg",      featured: false },
+    { id: 15, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-1.jpg",      featured: false },
+    { id: 16, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-2.jpg",      featured: false },
+    { id: 17, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-3.jpg",      featured: false },
+    { id: 56, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-4.jpg",      featured: false },
+    { id: 57, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-5.jpg",      featured: false },
+    { id: 58, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-6.jpg",      featured: false },
+    { id: 59, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-7.jpg",      featured: false },
+    { id: 60, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-8.jpg",      featured: false },
+    { id: 61, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-9.jpg",      featured: false },
+    { id: 62, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-10.jpg",     featured: false },
+    { id: 63, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-11.jpg",     featured: false },
+    { id: 64, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-12.jpg",     featured: false },
+    { id: 65, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-13.jpg",     featured: false },
+    { id: 66, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-14.jpg",     featured: false },
+    { id: 67, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-15.jpg",     featured: false },
+    { id: 68, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-16.jpg",     featured: false },
+    { id: 69, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-17.jpg",     featured: false },
+    { id: 70, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-18.jpg",     featured: false },
+    { id: 71, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-19.jpg",     featured: false },
+    { id: 72, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-20.jpg",     featured: false },
+    { id: 73, title: "Salman Khan — Throwback Photo",  category: "old-photos", image: "images/old-photos/old-21.jpg",     featured: false },
 
     { id: 18, title: "Wallpaper 1",  category: "wallpapers", image: "images/wallpapers/wallpaper.jpg",    downloadable: true },
     { id: 19, title: "Wallpaper 2",  category: "wallpapers", image: "images/wallpapers/wallpaper-0.jpg",  downloadable: true },
@@ -317,7 +335,18 @@ function initMusic() {
     audio.addEventListener("pause", () => setPlayingUI(false));
     audio.addEventListener("play", () => setPlayingUI(true));
 
-    tryAutoplay();
+    // Autoplay only on the home page (on load/refresh). On every other
+    // page the music stays off by default -- the visitor has to start
+    // it manually with the floating button; navigating between pages
+    // must never auto-trigger playback again.
+    const current = window.location.pathname.split("/").pop() || "index.html";
+    const isHomePage = current === "index.html" || current === "";
+
+    if (isHomePage) {
+        tryAutoplay();
+    } else {
+        setPlayingUI(false);
+    }
 }
 
 /* -------------------------------------------------------------
@@ -894,13 +923,14 @@ function renderCategories() {
         { key: "wallpapers", label: "Wallpapers", desc: "HD downloads",image: "images/wallpapers/wallpaper-10.jpg" }
     ];
 
-    // Movies, Wallpapers, and Popular BGM each have their own dedicated
-    // page; the rest still point at gallery.html?category=... until
-    // that page exists.
+    // Movies, Wallpapers, Popular BGM, and Old Photos each have their own
+    // dedicated page; the rest still point at gallery.html?category=...
+    // until that page exists.
     const linkFor = (key) => {
         if (key === "movies") return "movies.html";
         if (key === "wallpapers") return "wallpapers.html";
         if (key === "bgm") return "bgm.html";
+        if (key === "old-photos") return "old-photos.html";
         return `gallery.html?category=${key}`;
     };
 
@@ -919,39 +949,73 @@ function renderCategories() {
 }
 
 /* -------------------------------------------------------------
-   5b. WALLPAPERS PAGE RENDERER (used on wallpapers.html)
-   Renders every photo flagged downloadable:true with a working
-   "Download" button (forces a save instead of opening the image).
+   5b. SHARED FULL-SCREEN PHOTO VIEWER
+   Used by both the Wallpapers page and the Old Photos page. Wires
+   up the single #photoViewer modal (present in each page's HTML)
+   to a given list of photos: click/tap a grid card to open it full
+   screen, with a top-left Back button, a bottom Download button,
+   and Prev/Next (buttons, arrow keys, Escape to close).
    ------------------------------------------------------------- */
-function renderWallpapers() {
-    const grid = document.querySelector("[data-wallpaper-grid]");
-    if (!grid) return;
+function initFullscreenPhotoViewer(items, grid, cardClass, altPrefix, fileNamePrefix) {
+    const modal = document.getElementById("photoViewer");
+    if (!modal) return;
 
-    const wallpapers = photos.filter(p => p.category === "wallpapers");
+    const modalImg = document.getElementById("photoViewerImg");
+    const backdrop = document.getElementById("photoViewerBackdrop");
+    const closeBtn = document.getElementById("photoViewerClose");
+    const prevBtn = document.getElementById("photoViewerPrev");
+    const nextBtn = document.getElementById("photoViewerNext");
+    const downloadBtn = document.getElementById("photoViewerDownload");
+    const shareBtn = document.getElementById("photoViewerShare"); // optional -- only present on some pages (e.g. wallpapers)
+    const shareLabel = shareBtn ? shareBtn.querySelector(".photo-viewer-share-label") : null;
 
-    grid.innerHTML = wallpapers.map(photo => `
-      <figure class="wallpaper-card fade-up">
-        <img src="${photo.image}" alt="${photo.title}" loading="lazy"
-             onerror="this.src='https://placehold.co/720x1280/1c1a20/c9a227?text=${encodeURIComponent(photo.title)}'">
-        <figcaption class="wallpaper-overlay">
-          <button type="button" class="btn btn-primary wallpaper-download" data-download="${photo.image}" data-name="${photo.title}">
-            Download
-          </button>
-        </figcaption>
-      </figure>
-    `).join("");
+    let currentIndex = 0;
 
-    // Delegate click so it still works after the innerHTML re-render above.
-    grid.addEventListener("click", async (e) => {
-        const btn = e.target.closest(".wallpaper-download");
-        if (!btn) return;
+    const show = (index) => {
+        currentIndex = (index + items.length) % items.length;
+        const photo = items[currentIndex];
+        modalImg.src = photo.image;
+        modalImg.alt = `${altPrefix} ${currentIndex + 1}`;
+        downloadBtn.dataset.download = photo.image;
+        downloadBtn.dataset.name = `${fileNamePrefix}-${currentIndex + 1}`;
+    };
 
-        const url = btn.dataset.download;
-        const name = (btn.dataset.name || "wallpaper").replace(/\s+/g, "-").toLowerCase();
+    const open = (index) => {
+        show(index);
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+        closeBtn.focus();
+    };
+
+    const close = () => {
+        modal.hidden = true;
+        document.body.style.overflow = "";
+    };
+
+    grid.addEventListener("click", (e) => {
+        const card = e.target.closest(`.${cardClass}`);
+        if (!card) return;
+        open(Number(card.dataset.index));
+    });
+
+    grid.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const card = e.target.closest(`.${cardClass}`);
+        if (!card) return;
+        e.preventDefault();
+        open(Number(card.dataset.index));
+    });
+
+    backdrop.addEventListener("click", close);
+    closeBtn.addEventListener("click", close);
+    prevBtn.addEventListener("click", () => show(currentIndex - 1));
+    nextBtn.addEventListener("click", () => show(currentIndex + 1));
+
+    downloadBtn.addEventListener("click", async () => {
+        const url = downloadBtn.dataset.download;
+        const name = downloadBtn.dataset.name || fileNamePrefix;
 
         try {
-            // Fetch as a blob so the browser saves the file instead of
-            // just navigating to/opening the image in a new tab.
             const res = await fetch(url);
             const blob = await res.blob();
             const blobUrl = URL.createObjectURL(blob);
@@ -964,14 +1028,101 @@ function renderWallpapers() {
             link.remove();
             URL.revokeObjectURL(blobUrl);
         } catch (err) {
-            // Fallback: plain download attribute (works for same-origin
-            // images even if the fetch above fails for some reason).
             const link = document.createElement("a");
             link.href = url;
             link.download = `${name}.jpg`;
             link.click();
         }
     });
+
+    // Share button is optional -- only wired up when the page actually
+    // has one (currently just the Wallpapers viewer).
+    if (shareBtn) {
+        shareBtn.addEventListener("click", async () => {
+            const absoluteUrl = new URL(downloadBtn.dataset.download, window.location.href).href;
+            const shareData = {
+                title: "Salman Khan Wallpaper",
+                text: "Check out this Salman Khan wallpaper",
+                url: absoluteUrl
+            };
+
+            // Native share sheet where supported (most mobile browsers).
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    // User cancelled the share sheet -- nothing to do.
+                }
+                return;
+            }
+
+            // Desktop fallback: copy the link and briefly confirm it.
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(absoluteUrl);
+                    if (shareLabel) {
+                        shareLabel.textContent = "Copied!";
+                        setTimeout(() => { shareLabel.textContent = "Share"; }, 1500);
+                    }
+                } catch (err) {
+                    // Clipboard blocked -- nothing more we can do silently.
+                }
+            }
+        });
+    }
+
+    document.addEventListener("keydown", (e) => {
+        if (modal.hidden) return;
+        if (e.key === "Escape") close();
+        if (e.key === "ArrowLeft") show(currentIndex - 1);
+        if (e.key === "ArrowRight") show(currentIndex + 1);
+    });
+}
+
+/* -------------------------------------------------------------
+   5c. WALLPAPERS PAGE RENDERER (used on wallpapers.html)
+   Renders every photo flagged downloadable:true as a plain thumbnail.
+   Tapping one opens the shared full-screen viewer (Back / Download /
+   Prev / Next) instead of downloading straight from the grid.
+   ------------------------------------------------------------- */
+function renderWallpapers() {
+    const grid = document.querySelector("[data-wallpaper-grid]");
+    if (!grid) return;
+
+    const wallpapers = photos.filter(p => p.category === "wallpapers");
+
+    grid.innerHTML = wallpapers.map((photo, index) => `
+      <figure class="wallpaper-card fade-up" data-index="${index}" tabindex="0" role="button"
+              aria-label="Open wallpaper ${index + 1} of ${wallpapers.length} full screen">
+        <img src="${photo.image}" alt="Salman Khan wallpaper ${index + 1}" loading="lazy"
+             onerror="this.src='https://placehold.co/720x1280/1c1a20/c9a227?text=Wallpaper+${index + 1}'">
+      </figure>
+    `).join("");
+
+    initFullscreenPhotoViewer(wallpapers, grid, "wallpaper-card", "Salman Khan wallpaper", "salman-khan-wallpaper");
+}
+
+/* -------------------------------------------------------------
+   5d. OLD PHOTOS PAGE RENDERER (used on old-photos.html)
+   Renders every photo in the "old-photos" category as a grid of
+   throwback thumbnails. Tapping one opens the shared full-screen
+   viewer (Back / Download / Prev / Next).
+   ------------------------------------------------------------- */
+function renderOldPhotos() {
+    const grid = document.querySelector("[data-old-photos-grid]");
+    if (!grid) return;
+
+    const oldPhotos = photos.filter(p => p.category === "old-photos");
+
+    grid.innerHTML = oldPhotos.map((photo, index) => `
+      <figure class="old-photo-card fade-up" data-index="${index}" tabindex="0" role="button"
+              aria-label="Open photo ${index + 1} of ${oldPhotos.length} full screen">
+        <img src="${photo.image}" alt="Salman Khan throwback photo ${index + 1}" loading="lazy"
+             onerror="this.src='https://placehold.co/600x750/1c1a20/c9a227?text=Photo+${index + 1}'">
+      </figure>
+    `).join("");
+
+    initFullscreenPhotoViewer(oldPhotos, grid, "old-photo-card", "Salman Khan throwback photo", "salman-khan-old-photo");
 }
 
 /* -------------------------------------------------------------
@@ -1101,6 +1252,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderFilmstrip();
     renderCategories();
     renderWallpapers();
+    renderOldPhotos();
     renderMoviesPage();
     renderMovieDetailPage();
     initMovieSort();

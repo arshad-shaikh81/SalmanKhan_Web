@@ -12,21 +12,20 @@
     .nav-links {
         position: fixed;
         top: 64px;
-        right: 0;
+        right: -220px;
         flex-direction: column;
         background: rgba(11, 11, 13, 0.97);
         backdrop-filter: var(--glass-blur);
         width: 220px;
         padding: var(--space-md);
         gap: var(--space-sm);
-        transform: translateX(100%);
-        transition: transform var(--transition-med);
+        transition: right var(--transition-med);
         border-left: 1px solid var(--color-border);
         height: calc(100vh - 64px);
     }
 
     .nav-links.open {
-        transform: translateX(0);
+        right: 0;
     }
 
     .hero-content {
@@ -123,10 +122,42 @@
         aspect-ratio: 9/14;
     }
 
-    .wallpaper-download {
-        padding: 0.5rem 0.9rem;
-        font-size: 0.7rem;
+    /* Old Photos page: same reasoning as the wallpaper grid above --
+       force 2 columns so the throwback archive doesn't look stuck on
+       a single photo on narrow phones. */
+    .old-photos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
     }
+
+    /* Full-screen viewer: shrink the back/download controls and give
+       the image a bit more breathing room on narrow phones. */
+    .photo-viewer-stage {
+        padding: 4rem var(--space-sm) 5rem;
+    }
+
+    .photo-viewer-back {
+        padding: 0.45rem 0.8rem 0.45rem 0.6rem;
+        font-size: 0.78rem;
+    }
+
+    .photo-viewer-download,
+    .photo-viewer-share {
+        padding: 0.6rem 0.9rem;
+        font-size: 0.72rem;
+    }
+
+    .photo-viewer-actions {
+        gap: 0.5rem;
+    }
+
+    .photo-viewer-nav {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+    }
+    .photo-viewer-prev { left: var(--space-sm); }
+    .photo-viewer-next { right: var(--space-sm); }
 }
 
 /* Small mobile (≤ 380px) */

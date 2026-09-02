@@ -55,6 +55,8 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1006,12 +1008,15 @@ button:focus-visible,
     aspect-ratio: 9/16;
     background: var(--color-bg-elevated);
     border: 1px solid var(--color-border);
+    cursor: pointer;
     transition: transform var(--transition-med), border-color var(--transition-fast);
 }
 
-.wallpaper-card:hover {
+.wallpaper-card:hover,
+.wallpaper-card:focus-visible {
     transform: translateY(-6px);
     border-color: var(--color-gold);
+    outline: none;
 }
 
 .wallpaper-card img {
@@ -1021,30 +1026,129 @@ button:focus-visible,
     display: block;
 }
 
-.wallpaper-card .wallpaper-overlay {
+/* -------------------- Old Photos Page -------------------- */
+.old-photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-md);
+}
+
+.old-photo-card {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: transform var(--transition-med), border-color var(--transition-fast);
+}
+
+.old-photo-card:hover,
+.old-photo-card:focus-visible {
+    transform: translateY(-6px);
+    border-color: var(--color-gold);
+    outline: none;
+}
+
+.old-photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(0.15) contrast(1.02);
+}
+
+/* -------------------- Old Photos Full-Screen Viewer -------------------- */
+.photo-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 2100;
+}
+.photo-viewer[hidden] { display: none; }
+
+.photo-viewer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: #000;
+}
+
+.photo-viewer-stage {
     position: absolute;
     inset: 0;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: var(--space-xs);
-    padding: var(--space-sm);
-    background: linear-gradient(180deg, transparent 45%, rgba(11,11,13,0.92) 100%);
+    align-items: center;
+    justify-content: center;
+    padding: 4.5rem var(--space-md) 5.5rem;
 }
 
-.wallpaper-overlay h3 {
-    font-family: var(--font-display);
-    font-size: var(--fs-h3);
+.photo-viewer-stage img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.photo-viewer-back {
+    position: absolute;
+    top: var(--space-md);
+    left: var(--space-md);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(11, 11, 13, 0.6);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-main, #f5f2ea);
+    padding: 0.55rem 1rem 0.55rem 0.75rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.photo-viewer-back:hover {
+    border-color: var(--color-gold);
     color: var(--color-gold-light);
 }
 
-.wallpaper-download {
-    align-self: flex-start;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-    border: none;
+.photo-viewer-actions {
+    position: absolute;
+    bottom: var(--space-md);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
 }
+
+.photo-viewer-download,
+.photo-viewer-share {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.photo-viewer-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background: rgba(11, 11, 13, 0.6);
+    border: 1px solid var(--color-border);
+    color: var(--color-gold-light);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+.photo-viewer-nav:hover {
+    border-color: var(--color-gold);
+    transform: translateY(-50%) scale(1.08);
+}
+.photo-viewer-prev { left: var(--space-md); }
+.photo-viewer-next { right: var(--space-md); }
 
 /* -------------------- Movies Page -------------------- */
 .movie-selector {
